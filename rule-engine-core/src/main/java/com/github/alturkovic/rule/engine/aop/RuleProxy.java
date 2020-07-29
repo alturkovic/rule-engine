@@ -205,10 +205,10 @@ public class RuleProxy implements InvocationHandler {
 
   private Method getCompareToMethod() {
     if (this.compareToMethod == null) {
-      Arrays.stream(getMethods())
+      this.compareToMethod = Arrays.stream(getMethods())
           .filter(m -> "compareTo".equals(m.getName()))
           .findFirst()
-          .ifPresent(m -> this.compareToMethod = m);
+          .orElse(null);
     }
     return this.compareToMethod;
   }
@@ -251,10 +251,10 @@ public class RuleProxy implements InvocationHandler {
 
   private Method getToStringMethod() {
     if (this.toStringMethod == null) {
-      Arrays.stream(getMethods())
+      this.toStringMethod = Arrays.stream(getMethods())
           .filter(m -> m.getName().equals("toString"))
           .findFirst()
-          .ifPresent(m -> this.toStringMethod = m);
+          .orElse(null);
     }
     return this.toStringMethod;
   }
