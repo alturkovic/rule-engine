@@ -24,9 +24,10 @@
 
 package com.github.alturkovic.rule.engine.example;
 
-import com.github.alturkovic.rule.engine.builder.FactsBuilder;
 import com.github.alturkovic.rule.engine.builder.RuleBuilder;
 import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.core.SimpleFacts;
+import java.util.Collections;
 
 public class HelloWorldApplication {
   public static void main(final String[] args) {
@@ -37,6 +38,6 @@ public class HelloWorldApplication {
             .build())
         .build();
 
-    engine.evaluate(new FactsBuilder().build());
+    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
   }
 }

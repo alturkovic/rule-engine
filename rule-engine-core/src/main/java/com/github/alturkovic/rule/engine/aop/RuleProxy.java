@@ -40,11 +40,9 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import static java.lang.String.format;
 
-@Slf4j
 @RequiredArgsConstructor
 public class RuleProxy implements InvocationHandler {
   private final Object target;
@@ -130,7 +128,6 @@ public class RuleProxy implements InvocationHandler {
       final var parameters = extractGivenParameters(whenMethod, facts);
       return whenMethod.invoke(target, parameters.toArray());
     } catch (final Exception e) {
-      log.warn("Rule evaluation failed", e);
       return false;
     }
   }
@@ -145,16 +142,11 @@ public class RuleProxy implements InvocationHandler {
     return this.whenMethod;
   }
 
-  private Object thenMethods(final Object[] args) {
+  private Object thenMethods(final Object[] args) throws Exception {
     final var facts = (Facts) args[0];
     for (final var orderedAction : getThenMethods()) {
-      try {
-        final var parameters = extractGivenParameters(orderedAction.method, facts);
-        orderedAction.method.invoke(target, parameters.toArray());
-      } catch (final Exception e) {
-        log.warn("Rule execution failed", e);
-        return null;
-      }
+      final var parameters = extractGivenParameters(orderedAction.method, facts);
+      orderedAction.method.invoke(target, parameters.toArray());
     }
     return null;
   }
@@ -306,7 +298,7 @@ public class RuleProxy implements InvocationHandler {
 
       final Method whenMethod = whenMethods.get(0);
       if (!isWhenWellDefined(whenMethod)) {
-        throw new IllegalArgumentException(format("When method '%s' in rule '%s' must be public with boolean return type and with @Given or Facts parameters", whenMethod, rule.getClass().getName()));
+        throw new IllegalArgumentException(format("@When method '%s' in rule '%s' must be public with boolean return type and with @Given or Facts parameters", whenMethod, rule.getClass().getName()));
       }
     }
 
@@ -318,7 +310,7 @@ public class RuleProxy implements InvocationHandler {
 
       for (final Method thenMethod : thenMethods) {
         if (!isThenWellDefined(thenMethod)) {
-          throw new IllegalArgumentException(format("Then method '%s' in rule '%s' must be public with @Given or Facts parameters", thenMethod, rule.getClass().getName()));
+          throw new IllegalArgumentException(format("@Then method '%s' in rule '%s' must be public with @Given or Facts parameters", thenMethod, rule.getClass().getName()));
         }
       }
     }

@@ -25,9 +25,9 @@
 package com.github.alturkovic.rule.engine.example;
 
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.FactsBuilder;
 import com.github.alturkovic.rule.engine.builder.RuleBuilder;
 import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import com.github.alturkovic.rule.engine.support.AllCompositeRule;
 import java.util.Set;
 
@@ -47,7 +47,7 @@ public class HelloWorldWithCompositeRuleApplication {
         .rule(new AllCompositeRule("HelloWorldRule", null, Rule.DEFAULT_PRIORITY, Set.of(helloRule, worldRule)))
         .build();
 
-    engine.evaluate(new FactsBuilder()
+    engine.evaluate(SimpleFacts.builder()
         .fact("hello", "Hello ")
         .fact("world", "World")
         .build());

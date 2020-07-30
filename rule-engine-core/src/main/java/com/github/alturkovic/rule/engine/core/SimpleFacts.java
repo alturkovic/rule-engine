@@ -27,11 +27,16 @@ package com.github.alturkovic.rule.engine.core;
 import com.github.alturkovic.rule.engine.api.Facts;
 import java.util.Map;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class SimpleFacts implements Facts {
+
+  @Singular("fact")
   private final Map<String, ?> factMap;
 
   @Override

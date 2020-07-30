@@ -25,10 +25,11 @@
 package com.github.alturkovic.rule.engine.example;
 
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.FactsBuilder;
 import com.github.alturkovic.rule.engine.builder.RuleBuilder;
 import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import com.github.alturkovic.rule.engine.support.FirstCompositeRule;
+import java.util.Collections;
 import java.util.Set;
 
 public class FirstCompositeRuleApplication {
@@ -47,7 +48,6 @@ public class FirstCompositeRuleApplication {
         .rule(new FirstCompositeRule("FirstCompositeRule", null, Rule.DEFAULT_PRIORITY, Set.of(rule1, rule2)))
         .build();
 
-    engine.evaluate(new FactsBuilder()
-        .build());
+    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
   }
 }

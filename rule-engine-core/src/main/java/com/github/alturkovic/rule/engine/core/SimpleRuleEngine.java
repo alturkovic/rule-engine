@@ -30,32 +30,62 @@ import com.github.alturkovic.rule.engine.api.RuleEngine;
 import com.github.alturkovic.rule.engine.api.RuleEngineListener;
 import java.util.Set;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
+@Slf4j
 public class SimpleRuleEngine implements RuleEngine {
   private final RuleEngineListener listener;
   private final Set<Rule> rules;
 
   @Override
   public void evaluate(final Facts facts) {
+    log.debug("Rule engine evaluating: {}", facts);
     for (final var rule : rules) {
-      if (listener.shouldStopBeforeExecution(rule, facts)) {
+      if (listener.shouldStopBeforeEvaluation(rule, facts)) {
+        log.debug("Stopping further rule evaluation before '{}' was executed", rule);
         break;
       }
 
-      listener.beforeRuleEvaluation(rule, facts);
-      final var accepted = rule.accept(facts);
+      final boolean accepted = isRuleConditionAccepted(facts, rule);
+      Exception exception = null;
       if (accepted) {
-        listener.beforeAction(rule, facts);
-        rule.execute(facts);
-        listener.afterAction(rule, facts);
+        log.debug("Executing rule '{}' action using: {}", rule, facts);
+        exception = executeRule(facts, rule);
       } else {
-        listener.afterRuleRejected(rule, facts);
+        log.debug("Rule '{}' was not accepted by the condition using: {}", rule, facts);
       }
 
-      if (listener.shouldStopAfterExecution(rule, facts, accepted)) {
+      if (listener.shouldStopAfterEvaluation(rule, facts, accepted, exception)) {
+        log.debug("Stopping further rule evaluation after '{}' was executed", rule);
         break;
       }
     }
+  }
+
+  private boolean isRuleConditionAccepted(final Facts facts, final Rule rule) {
+    try {
+      listener.beforeCondition(rule, facts);
+      final var accepted = rule.accept(facts);
+      listener.afterCondition(rule, facts, accepted);
+      return accepted;
+    } catch (final Exception e) {
+      log.error("Rule '{}' failed condition check using: {}", rule, facts);
+      listener.onConditionError(rule, facts, e);
+      return false;
+    }
+  }
+
+  private Exception executeRule(final Facts facts, final Rule rule) {
+    try {
+      listener.beforeAction(rule, facts);
+      rule.execute(facts);
+      listener.afterAction(rule, facts);
+    } catch (final Exception e) {
+      log.error(String.format("Rule '%s' failed execution using: %s", rule, facts), e);
+      listener.onActionError(rule, facts, e);
+      return e;
+    }
+    return null;
   }
 }

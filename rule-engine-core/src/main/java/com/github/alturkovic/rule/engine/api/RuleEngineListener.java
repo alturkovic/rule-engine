@@ -27,10 +27,17 @@ package com.github.alturkovic.rule.engine.api;
 public interface RuleEngineListener {
   RuleEngineListener NO_OP = new RuleEngineListener() {};
 
-  default void beforeRuleEvaluation(Rule rule, Facts facts) {
+  default boolean shouldStopBeforeEvaluation(Rule rule, Facts facts) {
+    return false;
   }
 
-  default void afterRuleRejected(Rule rule, Facts facts) {
+  default void beforeCondition(Rule rule, Facts facts) {
+  }
+
+  default void afterCondition(Rule rule, Facts facts, boolean accepted) {
+  }
+
+  default void onConditionError(Rule rule, Facts facts, Exception e) {
   }
 
   default void beforeAction(Rule rule, Facts facts) {
@@ -39,11 +46,10 @@ public interface RuleEngineListener {
   default void afterAction(Rule rule, Facts facts) {
   }
 
-  default boolean shouldStopBeforeExecution(Rule rule, Facts facts) {
-    return false;
+  default void onActionError(Rule rule, Facts facts, Exception e) {
   }
 
-  default boolean shouldStopAfterExecution(Rule rule, Facts facts, boolean accepted) {
+  default boolean shouldStopAfterEvaluation(Rule rule, Facts facts, boolean accepted, Exception e) {
     return false;
   }
 }

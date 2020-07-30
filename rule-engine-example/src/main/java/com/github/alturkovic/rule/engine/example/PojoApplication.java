@@ -29,28 +29,30 @@ import com.github.alturkovic.rule.engine.aop.Rule;
 import com.github.alturkovic.rule.engine.aop.Then;
 import com.github.alturkovic.rule.engine.aop.When;
 import com.github.alturkovic.rule.engine.api.Facts;
-import com.github.alturkovic.rule.engine.builder.FactsBuilder;
 import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import java.time.LocalDateTime;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PojoApplication {
   public static void main(final String[] args) {
-    final var facts = new FactsBuilder()
-        .fact("temp", 40)
-        .fact("forecast", "Sunny")
-        .fact("date", LocalDateTime.now())
-        .build();
-
     final var engine = new RuleEngineBuilder()
         .rule(new Example())
         .build();
 
-    engine.getRules().stream()
-        .map(com.github.alturkovic.rule.engine.api.Rule::getDescription)
-        .forEach(System.out::println);
+    engine.evaluate(SimpleFacts.builder()
+        .fact("temp", 20)
+        .fact("forecast", "Cloudy")
+        .fact("date", LocalDateTime.now())
+        .build());
 
-    engine.evaluate(facts);
+    engine.evaluate(SimpleFacts.builder()
+        .fact("temp", 40)
+        .fact("forecast", "Sunny")
+        .fact("date", LocalDateTime.now())
+        .build());
   }
 
   @Data
@@ -65,12 +67,12 @@ public class PojoApplication {
 
     @Then(1)
     public void printForecast(final Facts facts, @Given("temp") final int temp) {
-      System.out.println(String.format("%s - %d", facts.get("forecast"), temp));
+      log.info("{} - {}", facts.get("forecast"), temp);
     }
 
     @Then(2)
     public void printWhenForecastWasMeasured(@Given("date") final LocalDateTime dateTime) {
-      System.out.println("Forecast was measured @ " + dateTime);
+      log.info("Forecast was measured @  {}", dateTime);
     }
   }
 }
