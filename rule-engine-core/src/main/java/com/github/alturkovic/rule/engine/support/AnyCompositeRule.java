@@ -30,7 +30,6 @@ import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-// TODO thread safe?
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class AnyCompositeRule extends CompositeRule {
@@ -55,8 +54,8 @@ public class AnyCompositeRule extends CompositeRule {
   public void execute(final Facts facts) {
     final var rule = LAST_ACCEPTED_RULE.get();
     if (rule != null) {
-      rule.execute(facts);
       LAST_ACCEPTED_RULE.remove();
+      rule.execute(facts);
     }
   }
 }
