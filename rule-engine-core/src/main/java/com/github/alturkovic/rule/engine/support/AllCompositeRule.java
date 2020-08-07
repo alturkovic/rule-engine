@@ -39,8 +39,7 @@ public class AllCompositeRule extends CompositeRule {
 
   @Override
   public boolean accept(final Facts facts) {
-    return rules.stream()
-        .allMatch(r -> r.accept(facts));
+    return rules.stream().allMatch(r -> r.accept(facts));
   }
 
   @Override

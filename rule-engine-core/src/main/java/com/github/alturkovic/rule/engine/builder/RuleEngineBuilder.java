@@ -24,11 +24,11 @@
 
 package com.github.alturkovic.rule.engine.builder;
 
-import com.github.alturkovic.rule.engine.aop.RuleProxy;
 import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.api.RuleEngine;
 import com.github.alturkovic.rule.engine.api.RuleEngineListener;
 import com.github.alturkovic.rule.engine.core.SimpleRuleEngine;
+import com.github.alturkovic.rule.engine.proxy.RuleProxy;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;

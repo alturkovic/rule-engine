@@ -26,9 +26,19 @@ package com.github.alturkovic.rule.engine.api;
 
 public interface Rule extends Action, Condition, Comparable<Rule> {
   int DEFAULT_PRIORITY = Integer.MAX_VALUE - 1;
+
   String getName();
   String getDescription();
+
   default int getPriority() {
     return DEFAULT_PRIORITY;
+  }
+
+  default int compareTo(final Rule rule) {
+    if (getPriority() == rule.getPriority()) {
+      return getName().compareTo(rule.getName());
+    }
+
+    return Integer.compare(getPriority(), rule.getPriority());
   }
 }

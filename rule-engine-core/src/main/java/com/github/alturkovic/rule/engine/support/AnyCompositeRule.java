@@ -22,20 +22,41 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.utils;
+package com.github.alturkovic.rule.engine.support;
 
+import com.github.alturkovic.rule.engine.api.Facts;
+import com.github.alturkovic.rule.engine.api.Rule;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SetUtils {
-  public static <T> Set<T> ensureSort(final Set<T> set) {
-    if (set instanceof SortedSet) {
-      return set;
+// TODO thread safe?
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class AnyCompositeRule extends CompositeRule {
+  private static final ThreadLocal<Rule> LAST_ACCEPTED_RULE = new ThreadLocal<>();
+
+  public AnyCompositeRule(final String name, final String description, final int priority, final Set<Rule> rules) {
+    super(name, description, priority, rules);
+  }
+
+  @Override
+  public boolean accept(final Facts facts) {
+    for (final Rule rule : rules) {
+      if (rule.accept(facts)) {
+        LAST_ACCEPTED_RULE.set(rule);
+        return true;
+      }
     }
-    return new TreeSet<>(set);
+    return false;
+  }
+
+  @Override
+  public void execute(final Facts facts) {
+    final var rule = LAST_ACCEPTED_RULE.get();
+    if (rule != null) {
+      rule.execute(facts);
+      LAST_ACCEPTED_RULE.remove();
+    }
   }
 }

@@ -24,9 +24,6 @@
 
 package com.github.alturkovic.rule.engine.api;
 
-import java.util.Set;
-
 public interface RuleEngine {
   void evaluate(Facts facts);
-  Set<Rule> getRules();
 }

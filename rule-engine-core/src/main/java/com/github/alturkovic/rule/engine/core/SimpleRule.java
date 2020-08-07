@@ -27,20 +27,21 @@ package com.github.alturkovic.rule.engine.core;
 import com.github.alturkovic.rule.engine.api.Action;
 import com.github.alturkovic.rule.engine.api.Condition;
 import com.github.alturkovic.rule.engine.api.Facts;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.github.alturkovic.rule.engine.api.Rule;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class SimpleRule extends AbstractRule {
+@Data
+public class SimpleRule implements Rule {
+  private final String name;
+  private final String description;
+  private final int priority;
+
+  @Getter(AccessLevel.NONE)
   private final Condition condition;
+  @Getter(AccessLevel.NONE)
   private final Action action;
-
-  public SimpleRule(final String name, final String description, final int priority, final Condition condition, final Action action) {
-    super(name, description, priority);
-    this.condition = condition;
-    this.action = action;
-  }
 
   @Override
   public boolean accept(final Facts facts) {

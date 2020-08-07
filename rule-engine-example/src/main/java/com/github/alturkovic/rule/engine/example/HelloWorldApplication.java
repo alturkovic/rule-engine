@@ -24,15 +24,16 @@
 
 package com.github.alturkovic.rule.engine.example;
 
-import com.github.alturkovic.rule.engine.builder.RuleBuilder;
 import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
 import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import java.util.Collections;
 
+import static com.github.alturkovic.rule.engine.builder.RuleBuilder.rule;
+
 public class HelloWorldApplication {
   public static void main(final String[] args) {
     final var engine = new RuleEngineBuilder()
-        .rule(new RuleBuilder("HelloWorldRule")
+        .rule(rule("HelloWorldRule")
             .then(f -> System.out.print("Hello "))
             .then(f -> System.out.println("World"))
             .build())

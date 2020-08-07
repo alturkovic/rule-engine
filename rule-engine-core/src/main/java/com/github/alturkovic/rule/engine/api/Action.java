@@ -27,5 +27,6 @@ package com.github.alturkovic.rule.engine.api;
 @FunctionalInterface
 public interface Action {
   Action NO_OP = f -> {};
+
   void execute(Facts facts);
 }

@@ -22,15 +22,33 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.core;
+package com.github.alturkovic.rule.engine.example;
 
-import com.github.alturkovic.rule.engine.api.Fact;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.core.SimpleFacts;
+import com.github.alturkovic.rule.engine.support.AnyCompositeRule;
+import java.util.Collections;
+import java.util.Set;
 
-@Data
-@AllArgsConstructor
-public class SimpleFact<T> implements Fact<T> {
-  private final String name;
-  private final T value;
+import static com.github.alturkovic.rule.engine.builder.RuleBuilder.rule;
+
+public class AnyCompositeRuleApplication {
+  public static void main(final String[] args) {
+    final var rule1 = rule("Rule1")
+        .priority(1)
+        .then(f -> System.out.print("1"))
+        .build();
+
+    final var rule2 = rule("Rule2")
+        .priority(2)
+        .then(f -> System.out.print("2"))
+        .build();
+
+    final var engine = new RuleEngineBuilder()
+        .rule(new AnyCompositeRule("AnyCompositeRule", null, Rule.DEFAULT_PRIORITY, Set.of(rule1, rule2)))
+        .build();
+
+    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
+  }
 }

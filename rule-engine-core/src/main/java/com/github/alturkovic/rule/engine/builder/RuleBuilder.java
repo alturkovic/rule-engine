@@ -28,24 +28,25 @@ import com.github.alturkovic.rule.engine.api.Action;
 import com.github.alturkovic.rule.engine.api.Condition;
 import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.core.SimpleRule;
-import com.github.alturkovic.rule.engine.support.MultiAction;
+import com.github.alturkovic.rule.engine.support.CompositeAction;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class RuleBuilder {
   private final String name;
   private String description;
+  private int priority = Rule.DEFAULT_PRIORITY;
   private Condition condition = Condition.ALWAYS;
   private Action action = Action.NO_OP;
-  private int priority = Rule.DEFAULT_PRIORITY;
-
-  public RuleBuilder priority(final int priority) {
-    this.priority = priority;
-    return this;
-  }
 
   public RuleBuilder description(final String description) {
     this.description = description;
+    return this;
+  }
+
+  public RuleBuilder priority(final int priority) {
+    this.priority = priority;
     return this;
   }
 
@@ -58,15 +59,27 @@ public class RuleBuilder {
     if (this.action == Action.NO_OP) {
       this.action = action;
     } else {
-      if (!(this.action instanceof MultiAction)) {
-        this.action = new MultiAction(this.action);
-      }
-      ((MultiAction) this.action).add(action);
+      this.action = new CompositeAction(accumulateActions(action));
     }
     return this;
   }
 
+  private ArrayList<Action> accumulateActions(final Action current) {
+    final var actions = new ArrayList<Action>();
+    if (this.action instanceof CompositeAction) {
+      actions.addAll(((CompositeAction) this.action).getActions());
+    } else {
+      actions.add(this.action);
+    }
+    actions.add(current);
+    return actions;
+  }
+
   public Rule build() {
     return new SimpleRule(name, description, priority, condition, action);
+  }
+
+  public static RuleBuilder rule(final String name) {
+    return new RuleBuilder(name);
   }
 }

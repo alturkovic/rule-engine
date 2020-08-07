@@ -25,19 +25,13 @@
 package com.github.alturkovic.rule.engine.support;
 
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.core.AbstractRule;
-import com.github.alturkovic.rule.engine.utils.SetUtils;
 import java.util.Set;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Data;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public abstract class CompositeRule extends AbstractRule {
+@Data
+public abstract class CompositeRule implements Rule {
+  private final String name;
+  private final String description;
+  private final int priority;
   protected final Set<Rule> rules;
-
-  public CompositeRule(final String name, final String description, final int priority, final Set<Rule> rules) {
-    super(name, description, priority);
-    this.rules = SetUtils.ensureSort(rules);
-  }
 }

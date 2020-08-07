@@ -28,11 +28,13 @@ import com.github.alturkovic.rule.engine.api.Facts;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Singular;
+import lombok.ToString;
 
-@Data
 @Builder
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 public class SimpleFacts implements Facts {
 

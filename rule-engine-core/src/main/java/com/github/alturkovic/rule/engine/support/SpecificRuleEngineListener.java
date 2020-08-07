@@ -22,74 +22,77 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.core;
+package com.github.alturkovic.rule.engine.support;
 
 import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.RuleEngine;
 import com.github.alturkovic.rule.engine.api.RuleEngineListener;
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class SimpleRuleEngine implements RuleEngine {
+public class SpecificRuleEngineListener implements RuleEngineListener {
+  private final Rule rule;
   private final RuleEngineListener listener;
-  private final Set<Rule> rules;
 
   @Override
-  public void evaluate(final Facts facts) {
-    log.debug("Rule engine evaluating: {}", facts);
-    for (final var rule : rules) {
-      if (listener.shouldStopBeforeEvaluation(rule, facts)) {
-        log.debug("Stopping further rule evaluation before '{}' was executed", rule);
-        break;
-      }
-
-      final boolean accepted = isRuleConditionAccepted(facts, rule);
-      Exception exception = null;
-      if (accepted) {
-        log.debug("Executing rule '{}' action using: {}", rule, facts);
-        exception = executeRule(facts, rule);
-      } else {
-        log.debug("Rule '{}' was not accepted by the condition using: {}", rule, facts);
-      }
-
-      if (listener.shouldStopAfterEvaluation(rule, facts, accepted, exception)) {
-        log.debug("Stopping further rule evaluation after '{}' was executed", rule);
-        break;
-      }
+  public boolean shouldStopBeforeEvaluation(final Rule rule, final Facts facts) {
+    if (this.rule.equals(rule)) {
+      return listener.shouldStopBeforeEvaluation(rule, facts);
     }
+    return false;
   }
 
-  private boolean isRuleConditionAccepted(final Facts facts, final Rule rule) {
-    try {
+  @Override
+  public void beforeCondition(final Rule rule, final Facts facts) {
+    if (this.rule.equals(rule)) {
       listener.beforeCondition(rule, facts);
-      final var accepted = rule.accept(facts);
-      listener.afterCondition(rule, facts, accepted);
-      return accepted;
-    } catch (final Exception e) {
-      log.error(String.format("Rule '%s' failed condition check using: %s", rule, facts), e);
-      listener.onConditionError(rule, facts, e);
-      return false;
     }
   }
 
-  private Exception executeRule(final Facts facts, final Rule rule) {
-    try {
-      listener.beforeAction(rule, facts);
-      rule.execute(facts);
-      listener.afterAction(rule, facts);
-    } catch (final Exception e) {
-      log.error(String.format("Rule '%s' failed execution using: %s", rule, facts), e);
-      listener.onActionError(rule, facts, e);
-      return e;
+  @Override
+  public void afterCondition(final Rule rule, final Facts facts, final boolean accepted) {
+    if (this.rule.equals(rule)) {
+      listener.afterCondition(rule, facts, accepted);
     }
-    return null;
+  }
+
+  @Override
+  public void onConditionError(final Rule rule, final Facts facts, final Exception e) {
+    if (this.rule.equals(rule)) {
+      listener.onConditionError(rule, facts, e);
+    }
+  }
+
+  @Override
+  public void beforeAction(final Rule rule, final Facts facts) {
+    if (this.rule.equals(rule)) {
+      listener.beforeAction(rule, facts);
+    }
+  }
+
+  @Override
+  public void afterAction(final Rule rule, final Facts facts) {
+    if (this.rule.equals(rule)) {
+      listener.afterAction(rule, facts);
+    }
+  }
+
+  @Override
+  public void onActionError(final Rule rule, final Facts facts, final Exception e) {
+    if (this.rule.equals(rule)) {
+      listener.onActionError(rule, facts, e);
+    }
+  }
+
+  @Override
+  public boolean shouldStopAfterEvaluation(final Rule rule, final Facts facts, final boolean accepted, final Exception e) {
+    if (this.rule.equals(rule)) {
+      return listener.shouldStopAfterEvaluation(rule, facts, accepted, e);
+    }
+    return false;
   }
 }

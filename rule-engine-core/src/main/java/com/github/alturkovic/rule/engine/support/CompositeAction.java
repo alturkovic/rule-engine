@@ -22,32 +22,21 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.example;
+package com.github.alturkovic.rule.engine.support;
 
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.RuleBuilder;
-import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
-import com.github.alturkovic.rule.engine.core.SimpleFacts;
-import com.github.alturkovic.rule.engine.support.FirstCompositeRule;
-import java.util.Collections;
-import java.util.Set;
+import com.github.alturkovic.rule.engine.api.Action;
+import com.github.alturkovic.rule.engine.api.Facts;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public class FirstCompositeRuleApplication {
-  public static void main(final String[] args) {
-    final var rule1 = new RuleBuilder("Rule1")
-        .priority(1)
-        .then(f -> System.out.print("1"))
-        .build();
+@Data
+@AllArgsConstructor
+public class CompositeAction implements Action {
+  private final List<Action> actions;
 
-    final var rule2 = new RuleBuilder("Rule2")
-        .priority(2)
-        .then(f -> System.out.print("2"))
-        .build();
-
-    final var engine = new RuleEngineBuilder()
-        .rule(new FirstCompositeRule("FirstCompositeRule", null, Rule.DEFAULT_PRIORITY, Set.of(rule1, rule2)))
-        .build();
-
-    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
+  @Override
+  public void execute(final Facts facts) {
+    actions.forEach(action -> action.execute(facts));
   }
 }
