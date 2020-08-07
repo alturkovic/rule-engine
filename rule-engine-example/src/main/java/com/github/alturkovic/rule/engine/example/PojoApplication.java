@@ -29,7 +29,7 @@ import com.github.alturkovic.rule.engine.aop.Rule;
 import com.github.alturkovic.rule.engine.aop.Then;
 import com.github.alturkovic.rule.engine.aop.When;
 import com.github.alturkovic.rule.engine.api.Facts;
-import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
 import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PojoApplication {
   public static void main(final String[] args) {
-    final var engine = new RuleEngineBuilder()
+    final var engine = new DefaultRuleEngineBuilder()
         .rule(new Example())
         .build();
 

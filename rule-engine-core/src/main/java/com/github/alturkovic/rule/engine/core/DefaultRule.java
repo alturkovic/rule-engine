@@ -22,42 +22,34 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.builder;
+package com.github.alturkovic.rule.engine.core;
 
+import com.github.alturkovic.rule.engine.api.Action;
+import com.github.alturkovic.rule.engine.api.Condition;
+import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.RuleEngine;
-import com.github.alturkovic.rule.engine.api.RuleEngineListener;
-import com.github.alturkovic.rule.engine.core.SimpleRuleEngine;
-import com.github.alturkovic.rule.engine.proxy.RuleProxy;
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
 
-public class RuleEngineBuilder {
-  private final Set<Rule> rules = new TreeSet<>();
-  private RuleEngineListener listener = RuleEngineListener.NO_OP;
+@Data
+public class DefaultRule implements Rule {
+  private final String name;
+  private final String description;
+  private final int priority;
 
-  public RuleEngineBuilder listener(final RuleEngineListener listener) {
-    this.listener = listener;
-    return this;
+  @Getter(AccessLevel.NONE)
+  private final Condition condition;
+  @Getter(AccessLevel.NONE)
+  private final Action action;
+
+  @Override
+  public boolean accept(final Facts facts) {
+    return condition.accept(facts);
   }
 
-  public RuleEngineBuilder rules(final Collection<? extends Rule> rules) {
-    this.rules.addAll(rules);
-    return this;
-  }
-
-  public RuleEngineBuilder rule(final Rule rule) {
-    this.rules.add(rule);
-    return this;
-  }
-
-  public RuleEngineBuilder rule(final Object rule) {
-    this.rules.add(RuleProxy.asRule(rule));
-    return this;
-  }
-
-  public RuleEngine build() {
-    return new SimpleRuleEngine(listener, rules);
+  @Override
+  public void execute(final Facts facts) {
+    action.execute(facts);
   }
 }

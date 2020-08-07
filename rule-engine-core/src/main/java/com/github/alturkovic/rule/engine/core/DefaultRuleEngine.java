@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class SimpleRuleEngine implements RuleEngine {
+public class DefaultRuleEngine implements RuleEngine {
   private final RuleEngineListener listener;
   private final Set<Rule> rules;
 

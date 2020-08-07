@@ -25,26 +25,26 @@
 package com.github.alturkovic.rule.engine.example;
 
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
 import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import com.github.alturkovic.rule.engine.support.AllCompositeRule;
 import java.util.Set;
 
-import static com.github.alturkovic.rule.engine.builder.RuleBuilder.rule;
+import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
 
 public class HelloWorldWithCompositeRuleApplication {
   public static void main(final String[] args) {
-    final var helloRule = rule("HelloRule")
+    final var helloRule = newRule("HelloRule")
         .when(f -> f.isDeclared("hello"))
         .then(f -> System.out.print(f.<String>get("hello")))
         .build();
 
-    final var worldRule = rule("WorldRule")
+    final var worldRule = newRule("WorldRule")
         .when(f -> f.isDeclared("world"))
         .then(f -> System.out.println(f.<String>get("world")))
         .build();
 
-    final var engine = new RuleEngineBuilder()
+    final var engine = new DefaultRuleEngineBuilder()
         .rule(new AllCompositeRule("HelloWorldRule", null, Rule.DEFAULT_PRIORITY, Set.of(helloRule, worldRule)))
         .build();
 

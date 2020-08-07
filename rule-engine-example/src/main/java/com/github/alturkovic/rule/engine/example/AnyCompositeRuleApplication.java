@@ -25,27 +25,27 @@
 package com.github.alturkovic.rule.engine.example;
 
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
 import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import com.github.alturkovic.rule.engine.support.AnyCompositeRule;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.github.alturkovic.rule.engine.builder.RuleBuilder.rule;
+import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
 
 public class AnyCompositeRuleApplication {
   public static void main(final String[] args) {
-    final var rule1 = rule("Rule1")
+    final var rule1 = newRule("Rule1")
         .priority(1)
         .then(f -> System.out.print("1"))
         .build();
 
-    final var rule2 = rule("Rule2")
+    final var rule2 = newRule("Rule2")
         .priority(2)
         .then(f -> System.out.print("2"))
         .build();
 
-    final var engine = new RuleEngineBuilder()
+    final var engine = new DefaultRuleEngineBuilder()
         .rule(new AnyCompositeRule("AnyCompositeRule", null, Rule.DEFAULT_PRIORITY, Set.of(rule1, rule2)))
         .build();
 

@@ -24,19 +24,19 @@
 
 package com.github.alturkovic.rule.engine.example;
 
-import com.github.alturkovic.rule.engine.builder.RuleEngineBuilder;
+import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
 import com.github.alturkovic.rule.engine.core.SimpleFacts;
 
-import static com.github.alturkovic.rule.engine.builder.RuleBuilder.rule;
+import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
 
 public class HelloWorldWithRulesApplication {
   public static void main(final String[] args) {
-    final var engine = new RuleEngineBuilder()
-        .rule(rule("HelloRule")
+    final var engine = new DefaultRuleEngineBuilder()
+        .rule(newRule("HelloRule")
             .when(f -> f.isDeclared("hello"))
             .then(f -> System.out.print(f.<String>get("hello")))
             .build())
-        .rule(rule("WorldRule")
+        .rule(newRule("WorldRule")
             .when(f -> f.isDeclared("world"))
             .then(f -> System.out.println(f.<String>get("world")))
             .build())

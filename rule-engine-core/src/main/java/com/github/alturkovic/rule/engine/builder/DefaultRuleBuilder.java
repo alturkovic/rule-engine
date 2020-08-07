@@ -27,35 +27,35 @@ package com.github.alturkovic.rule.engine.builder;
 import com.github.alturkovic.rule.engine.api.Action;
 import com.github.alturkovic.rule.engine.api.Condition;
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.core.SimpleRule;
+import com.github.alturkovic.rule.engine.core.DefaultRule;
 import com.github.alturkovic.rule.engine.support.CompositeAction;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RuleBuilder {
+public class DefaultRuleBuilder {
   private final String name;
   private String description;
   private int priority = Rule.DEFAULT_PRIORITY;
   private Condition condition = Condition.ALWAYS;
   private Action action = Action.NO_OP;
 
-  public RuleBuilder description(final String description) {
+  public DefaultRuleBuilder description(final String description) {
     this.description = description;
     return this;
   }
 
-  public RuleBuilder priority(final int priority) {
+  public DefaultRuleBuilder priority(final int priority) {
     this.priority = priority;
     return this;
   }
 
-  public RuleBuilder when(final Condition condition) {
+  public DefaultRuleBuilder when(final Condition condition) {
     this.condition = condition;
     return this;
   }
 
-  public RuleBuilder then(final Action action) {
+  public DefaultRuleBuilder then(final Action action) {
     if (this.action == Action.NO_OP) {
       this.action = action;
     } else {
@@ -76,10 +76,10 @@ public class RuleBuilder {
   }
 
   public Rule build() {
-    return new SimpleRule(name, description, priority, condition, action);
+    return new DefaultRule(name, description, priority, condition, action);
   }
 
-  public static RuleBuilder rule(final String name) {
-    return new RuleBuilder(name);
+  public static DefaultRuleBuilder newRule(final String name) {
+    return new DefaultRuleBuilder(name);
   }
 }
