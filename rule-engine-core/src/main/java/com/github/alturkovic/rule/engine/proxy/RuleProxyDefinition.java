@@ -46,6 +46,31 @@ class RuleProxyDefinition {
   private Method compareToMethod;
   private Method toStringMethod;
 
+  public String getName() {
+    if (name == null) {
+      name = Optional.of(annotation.name())
+          .filter(n -> !n.isBlank())
+          .orElseGet(targetClass::getSimpleName);
+    }
+    return name;
+  }
+
+  public String getDescription() {
+    if (description == null) {
+      description = Optional.of(annotation.description())
+          .filter(d -> !d.isBlank())
+          .orElseGet(this::buildDefaultDescription);
+    }
+    return description;
+  }
+
+  private Rule getAnnotation() {
+    if (annotation == null) {
+      annotation = targetClass.getAnnotation(com.github.alturkovic.rule.engine.aop.Rule.class);
+    }
+    return annotation;
+  }
+
   public Method getWhenMethod() {
     if (whenMethod == null) {
       whenMethod = getMethods().stream()
@@ -66,24 +91,6 @@ class RuleProxyDefinition {
     return thenMethods;
   }
 
-  public String getName() {
-    if (name == null) {
-      name = Optional.of(annotation.name())
-          .filter(n -> !n.isBlank())
-          .orElseGet(targetClass::getSimpleName);
-    }
-    return name;
-  }
-
-  public String getDescription() {
-    if (description == null) {
-      description = Optional.of(annotation.description())
-          .filter(d -> !d.isBlank())
-          .orElseGet(this::buildDefaultDescription);
-    }
-    return description;
-  }
-
   public Method getCompareToMethod() {
     if (compareToMethod == null) {
       compareToMethod = getNamedMethod("compareTo");
@@ -100,13 +107,6 @@ class RuleProxyDefinition {
 
   public int getPriority() {
     return getAnnotation().priority();
-  }
-
-  private Rule getAnnotation() {
-    if (annotation == null) {
-      annotation = targetClass.getAnnotation(com.github.alturkovic.rule.engine.aop.Rule.class);
-    }
-    return annotation;
   }
 
   private List<Method> getMethods() {
