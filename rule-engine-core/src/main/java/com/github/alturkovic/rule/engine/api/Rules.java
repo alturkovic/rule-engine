@@ -22,16 +22,8 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.api;
 
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Data;
-
-@Data
-public abstract class CompositeRule implements Rule {
-  private final String name;
-  private final String description;
-  private final int priority;
-  protected final Rules rules;
+public interface Rules extends Iterable<Rule> {
+  void register(Rule rule);
 }

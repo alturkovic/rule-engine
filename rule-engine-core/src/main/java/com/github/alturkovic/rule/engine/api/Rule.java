@@ -34,7 +34,12 @@ public interface Rule extends Action, Condition, Comparable<Rule> {
     return DEFAULT_PRIORITY;
   }
 
+  @Override
   default int compareTo(final Rule rule) {
+    if (this == rule) {
+      return 0;
+    }
+
     if (getPriority() == rule.getPriority()) {
       return getName().compareTo(rule.getName());
     }

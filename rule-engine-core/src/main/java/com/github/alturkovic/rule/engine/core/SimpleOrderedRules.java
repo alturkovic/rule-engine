@@ -22,16 +22,26 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.core;
 
 import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Data;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+import lombok.NoArgsConstructor;
 
-@Data
-public abstract class CompositeRule implements Rule {
-  private final String name;
-  private final String description;
-  private final int priority;
-  protected final Rules rules;
+@NoArgsConstructor
+public class SimpleOrderedRules implements Rules {
+  private final Set<Rule> rules = new TreeSet<>();
+
+  @Override
+  public void register(final Rule rule) {
+    rules.add(rule);
+  }
+
+  @Override
+  public Iterator<Rule> iterator() {
+    return rules.iterator();
+  }
 }

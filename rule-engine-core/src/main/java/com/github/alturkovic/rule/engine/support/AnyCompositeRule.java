@@ -26,7 +26,8 @@ package com.github.alturkovic.rule.engine.support;
 
 import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import java.util.Set;
+import com.github.alturkovic.rule.engine.api.Rules;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -35,7 +36,8 @@ import lombok.ToString;
 public class AnyCompositeRule extends CompositeRule {
   private static final ThreadLocal<Rule> LAST_ACCEPTED_RULE = new ThreadLocal<>();
 
-  public AnyCompositeRule(final String name, final String description, final int priority, final Set<Rule> rules) {
+  @Builder
+  public AnyCompositeRule(final String name, final String description, final int priority, final Rules rules) {
     super(name, description, priority, rules);
   }
 

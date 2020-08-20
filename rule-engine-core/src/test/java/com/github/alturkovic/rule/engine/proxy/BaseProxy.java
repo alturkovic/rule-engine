@@ -22,16 +22,19 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.proxy;
 
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Data;
+import com.github.alturkovic.rule.engine.aop.Then;
+import com.github.alturkovic.rule.engine.aop.When;
 
-@Data
-public abstract class CompositeRule implements Rule {
-  private final String name;
-  private final String description;
-  private final int priority;
-  protected final Rules rules;
+public class BaseProxy {
+
+  @When
+  public boolean shouldRun() {
+    return true;
+  }
+
+  @Then
+  public void run() {
+  }
 }

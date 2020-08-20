@@ -27,6 +27,7 @@ package com.github.alturkovic.rule.engine.api;
 @FunctionalInterface
 public interface Condition {
   Condition ALWAYS = f -> true;
+  Condition NEVER = f -> false;
 
   boolean accept(Facts facts);
 }

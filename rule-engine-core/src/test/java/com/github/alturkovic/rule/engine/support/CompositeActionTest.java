@@ -24,14 +24,34 @@
 
 package com.github.alturkovic.rule.engine.support;
 
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Data;
+import com.github.alturkovic.rule.engine.api.Action;
+import com.github.alturkovic.rule.engine.api.Facts;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@Data
-public abstract class CompositeRule implements Rule {
-  private final String name;
-  private final String description;
-  private final int priority;
-  protected final Rules rules;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
+class CompositeActionTest {
+
+  @Mock
+  private Action action1, action2;
+
+  @Mock
+  private Facts facts;
+
+  @Test
+  public void shouldExecuteAll() {
+    final var compositeAction = CompositeAction.builder()
+        .action(action1)
+        .action(action2)
+        .build();
+
+    compositeAction.execute(facts);
+
+    verify(action1).execute(facts);
+    verify(action2).execute(facts);
+  }
 }

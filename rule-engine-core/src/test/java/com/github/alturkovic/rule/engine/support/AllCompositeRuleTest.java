@@ -24,14 +24,45 @@
 
 package com.github.alturkovic.rule.engine.support;
 
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Data;
+import com.github.alturkovic.rule.engine.BaseTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@Data
-public abstract class CompositeRule implements Rule {
-  private final String name;
-  private final String description;
-  private final int priority;
-  protected final Rules rules;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+class AllCompositeRuleTest extends BaseTest {
+  private AllCompositeRule allCompositeRule;
+
+  @BeforeEach
+  public void setupCompositeRule() {
+    this.allCompositeRule = AllCompositeRule.builder()
+        .rules(rules)
+        .build();
+  }
+
+  @Test
+  public void shouldAcceptWhenAllAccept() {
+    when(rule1.accept(facts)).thenReturn(true);
+    when(rule2.accept(facts)).thenReturn(true);
+
+    assertThat(allCompositeRule.accept(facts)).isTrue();
+  }
+
+  @Test
+  public void shouldNotAcceptWhenAnyDeclines() {
+    when(rule1.accept(facts)).thenReturn(true);
+    when(rule2.accept(facts)).thenReturn(false);
+
+    assertThat(allCompositeRule.accept(facts)).isFalse();
+  }
+
+  @Test
+  public void shouldExecuteAllRules() {
+    allCompositeRule.execute(facts);
+
+    verify(rule1).execute(facts);
+    verify(rule2).execute(facts);
+  }
 }

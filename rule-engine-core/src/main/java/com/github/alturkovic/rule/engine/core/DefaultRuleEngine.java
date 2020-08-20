@@ -28,7 +28,7 @@ import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.api.RuleEngine;
 import com.github.alturkovic.rule.engine.api.RuleEngineListener;
-import java.util.Set;
+import com.github.alturkovic.rule.engine.api.Rules;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class DefaultRuleEngine implements RuleEngine {
   private final RuleEngineListener listener;
-  private final Set<Rule> rules;
+  private final Rules rules;
 
   @Override
   public void evaluate(final Facts facts) {

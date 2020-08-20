@@ -48,7 +48,7 @@ class RuleProxyDefinition {
 
   public String getName() {
     if (name == null) {
-      name = Optional.of(annotation.name())
+      name = Optional.of(getAnnotation().name())
           .filter(n -> !n.isBlank())
           .orElseGet(targetClass::getSimpleName);
     }
@@ -57,7 +57,7 @@ class RuleProxyDefinition {
 
   public String getDescription() {
     if (description == null) {
-      description = Optional.of(annotation.description())
+      description = Optional.of(getAnnotation().description())
           .filter(d -> !d.isBlank())
           .orElseGet(this::buildDefaultDescription);
     }

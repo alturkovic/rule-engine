@@ -37,8 +37,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>11</java.version>
 
-    <slf4j.version>1.7.30</slf4j.version>
     <lombok.version>1.18.12</lombok.version>
+    <slf4j.version>1.7.30</slf4j.version>
+
+    <junit-jupiter-api.version>5.6.2</junit-jupiter-api.version>
+    <assertj-core.version>3.9.1</assertj-core.version>
+    <mockito-junit-jupiter.version>3.5.2</mockito-junit-jupiter.version>
   </properties>
 
   <modules>
@@ -62,6 +66,25 @@
         <groupId>com.github.alturkovic</groupId>
         <artifactId>rule-engine-core</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit-jupiter-api.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj-core.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${mockito-junit-jupiter.version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

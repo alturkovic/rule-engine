@@ -35,7 +35,7 @@ public class RuleProxy implements InvocationHandler {
   private final RuleProxyDefinition definition;
   private final RuleProxyMethodInvoker invoker;
 
-  public RuleProxy(final Object target) {
+  private RuleProxy(final Object target) {
     this.target = target;
     this.definition = new RuleProxyDefinition(target.getClass());
     this.invoker = new RuleProxyMethodInvoker(this.definition);

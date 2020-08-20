@@ -22,16 +22,41 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine;
 
+import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.api.RuleEngineListener;
 import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Data;
+import com.github.alturkovic.rule.engine.core.DefaultRuleEngine;
+import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@Data
-public abstract class CompositeRule implements Rule {
-  private final String name;
-  private final String description;
-  private final int priority;
-  protected final Rules rules;
+@ExtendWith(MockitoExtension.class)
+public abstract class BaseTest {
+
+  @Mock
+  protected Rule rule1, rule2;
+
+  @Mock
+  protected Facts facts;
+
+  @Mock
+  protected RuleEngineListener listener;
+
+  protected DefaultRuleEngine engine;
+
+  protected Rules rules;
+
+  @BeforeEach
+  public void setup() {
+    rules = new SimpleOrderedRules();
+    rules.register(rule1);
+    rules.register(rule2);
+
+    engine = new DefaultRuleEngine(listener, rules);
+  }
 }

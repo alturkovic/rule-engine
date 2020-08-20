@@ -28,11 +28,15 @@ import com.github.alturkovic.rule.engine.api.Action;
 import com.github.alturkovic.rule.engine.api.Facts;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class CompositeAction implements Action {
+  @Singular
   private final List<Action> actions;
 
   @Override

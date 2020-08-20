@@ -26,20 +26,28 @@ package com.github.alturkovic.rule.engine.support;
 
 import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import java.util.Set;
+import com.github.alturkovic.rule.engine.api.Rules;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class AllCompositeRule extends CompositeRule {
-  public AllCompositeRule(final String name, final String description, final int priority, final Set<Rule> rules) {
+
+  @Builder
+  public AllCompositeRule(final String name, final String description, final int priority, final Rules rules) {
     super(name, description, priority, rules);
   }
 
   @Override
   public boolean accept(final Facts facts) {
-    return rules.stream().allMatch(r -> r.accept(facts));
+    for (final Rule rule : rules) {
+      if (!rule.accept(facts)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override

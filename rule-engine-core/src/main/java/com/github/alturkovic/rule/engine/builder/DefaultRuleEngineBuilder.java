@@ -27,14 +27,13 @@ package com.github.alturkovic.rule.engine.builder;
 import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.api.RuleEngine;
 import com.github.alturkovic.rule.engine.api.RuleEngineListener;
+import com.github.alturkovic.rule.engine.api.Rules;
 import com.github.alturkovic.rule.engine.core.DefaultRuleEngine;
+import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
 import com.github.alturkovic.rule.engine.proxy.RuleProxy;
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class DefaultRuleEngineBuilder {
-  private final Set<Rule> rules = new TreeSet<>();
+  private final Rules rules = new SimpleOrderedRules();
   private RuleEngineListener listener = RuleEngineListener.NO_OP;
 
   public DefaultRuleEngineBuilder listener(final RuleEngineListener listener) {
@@ -42,18 +41,13 @@ public class DefaultRuleEngineBuilder {
     return this;
   }
 
-  public DefaultRuleEngineBuilder rules(final Collection<? extends Rule> rules) {
-    this.rules.addAll(rules);
-    return this;
-  }
-
   public DefaultRuleEngineBuilder rule(final Rule rule) {
-    this.rules.add(rule);
+    this.rules.register(rule);
     return this;
   }
 
   public DefaultRuleEngineBuilder rule(final Object rule) {
-    this.rules.add(RuleProxy.asRule(rule));
+    this.rules.register(RuleProxy.asRule(rule));
     return this;
   }
 
