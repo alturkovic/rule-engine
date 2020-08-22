@@ -96,7 +96,7 @@ class RuleProxyValidator {
   private static boolean areParametersValid(final Method method) {
     for (final var parameter : method.getParameters()) {
       final var given = parameter.getAnnotation(Given.class);
-      if (given == null && !parameter.getType().isAssignableFrom(Facts.class)) {
+      if (given == null && !Facts.class.isAssignableFrom(parameter.getType())) {
         return false;
       }
     }

@@ -87,9 +87,7 @@ class RuleProxyMethodInvoker {
 
   public String toStringProxy(final Object target) throws Exception {
     final var toString = definition.getToStringMethod();
-    return toString == null
-        ? definition.getName()
-        : (String) toString.invoke(target);
+    return (String) toString.invoke(target);
   }
 
   private Object[] extractGivenParameters(final Method method, final Facts facts) {
