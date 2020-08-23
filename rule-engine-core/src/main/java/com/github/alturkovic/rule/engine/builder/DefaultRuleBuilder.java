@@ -30,6 +30,7 @@ import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.core.DefaultRule;
 import com.github.alturkovic.rule.engine.support.CompositeAction;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -52,6 +53,11 @@ public class DefaultRuleBuilder {
 
   public DefaultRuleBuilder when(final Condition condition) {
     this.condition = condition;
+    return this;
+  }
+
+  public <T> DefaultRuleBuilder when(final String fact, final Predicate<T> predicate) {
+    this.condition = facts -> predicate.test(facts.get(fact));
     return this;
   }
 

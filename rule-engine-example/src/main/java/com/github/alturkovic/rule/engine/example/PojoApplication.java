@@ -56,7 +56,6 @@ public class PojoApplication {
   }
 
   @Data
-  @SuppressWarnings("unused")
   @Rule(name = "Example rule", description = "Print temperature if it is hot and then print the date the forecast was provided")
   public static class Example {
 
