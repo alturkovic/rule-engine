@@ -24,6 +24,10 @@
 
 package com.github.alturkovic.rule.engine.api;
 
+/**
+ * Describes what to execute with the given {@link Facts}.
+ * Meant to be used as the execution part of a {@link Rule}.
+ */
 @FunctionalInterface
 public interface Action {
   Action NO_OP = f -> {};

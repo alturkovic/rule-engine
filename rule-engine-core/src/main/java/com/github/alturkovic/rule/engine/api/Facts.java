@@ -24,6 +24,9 @@
 
 package com.github.alturkovic.rule.engine.api;
 
+/**
+ * Holds all known facts to evaluate and fire rules.
+ */
 public interface Facts {
   <T> T get(String name);
   boolean isDeclared(String name);

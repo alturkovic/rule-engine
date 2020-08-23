@@ -30,6 +30,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+/**
+ * A proxy around an annotation based POJO rule.
+ */
 public class RuleProxy implements InvocationHandler {
   private final Object target;
   private final RuleProxyDefinition definition;

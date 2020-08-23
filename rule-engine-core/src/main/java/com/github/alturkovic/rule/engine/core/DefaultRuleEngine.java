@@ -34,6 +34,9 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This implementation will fire all rules that {@link Rule#accept(Facts) accept} the given {@link Facts}.
+ */
 @Slf4j
 @ToString
 @EqualsAndHashCode

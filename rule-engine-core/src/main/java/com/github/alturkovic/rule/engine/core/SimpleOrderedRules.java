@@ -31,6 +31,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import lombok.NoArgsConstructor;
 
+/**
+ * Holds rules in a TreeSet ensuring their natural ordering as described in {@link Rule#compareTo(Rule)}.
+ */
 @NoArgsConstructor
 public class SimpleOrderedRules implements Rules {
   private final Set<Rule> rules = new TreeSet<>();

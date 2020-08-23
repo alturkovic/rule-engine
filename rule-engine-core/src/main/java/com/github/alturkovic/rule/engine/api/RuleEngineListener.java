@@ -24,6 +24,9 @@
 
 package com.github.alturkovic.rule.engine.api;
 
+/**
+ * Triggers on specific {@link RuleEngine} execution events.
+ */
 public interface RuleEngineListener {
   RuleEngineListener NO_OP = new RuleEngineListener() {};
 

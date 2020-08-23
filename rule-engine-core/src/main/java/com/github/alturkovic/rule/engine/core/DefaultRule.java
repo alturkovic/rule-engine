@@ -32,6 +32,9 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 
+/**
+ * Encapsulates {@link Condition} and {@link Action} to delegate rule calls.
+ */
 @Data
 public class DefaultRule implements Rule {
   private final String name;

@@ -24,6 +24,9 @@
 
 package com.github.alturkovic.rule.engine.api;
 
+/**
+ * Engine will evaluate the given {@link Facts} and fire rules according to engine specific logic.
+ */
 public interface RuleEngine {
   void evaluate(Facts facts);
 }

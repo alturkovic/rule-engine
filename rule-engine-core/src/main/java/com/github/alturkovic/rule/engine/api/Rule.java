@@ -24,6 +24,9 @@
 
 package com.github.alturkovic.rule.engine.api;
 
+/**
+ * The core interface of the library used to describe {@link Action what to do} and {@link Condition when} based on the provided {@link Facts}.
+ */
 public interface Rule extends Action, Condition, Comparable<Rule> {
   int DEFAULT_PRIORITY = Integer.MAX_VALUE - 1;
 

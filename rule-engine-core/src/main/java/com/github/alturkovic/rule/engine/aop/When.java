@@ -30,6 +30,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a rule method as an {@link com.github.alturkovic.rule.engine.api.Condition}.
+ * Inject facts into the signature using {@link Given} or a {@link com.github.alturkovic.rule.engine.api.Facts} object.
+ */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

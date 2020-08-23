@@ -24,6 +24,10 @@
 
 package com.github.alturkovic.rule.engine.api;
 
+/**
+ * Describes whether the given {@link Facts} should be accepted.
+ * Meant to be used as the filtering part of a {@link Rule}.
+ */
 @FunctionalInterface
 public interface Condition {
   Condition ALWAYS = f -> true;

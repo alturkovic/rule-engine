@@ -32,6 +32,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Singular;
 import lombok.ToString;
 
+/**
+ * Implementation which looks up named facts in the provided map.
+ */
 @Builder
 @ToString
 @EqualsAndHashCode
