@@ -24,31 +24,49 @@
 
 package com.github.alturkovic.rule.engine.composite;
 
-import com.github.alturkovic.rule.engine.BaseTest;
+import com.github.alturkovic.rule.engine.api.Facts;
+import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
+import java.util.TreeSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class AnyCompositeRuleTest extends BaseTest {
+@ExtendWith(MockitoExtension.class)
+class AnyCompositeRuleTest {
   private AnyCompositeRule anyCompositeRule;
+
+  @Mock
+  private Rule rule1, rule2;
+
+  @Mock
+  private Facts facts;
 
   @BeforeEach
   public void setupCompositeRule() {
+    final var rules = new TreeSet<Rule>();
+    rules.add(rule1);
+    rules.add(rule2);
+
     this.anyCompositeRule = AnyCompositeRule.builder()
-        .rules(rules)
+        .rules(new SimpleOrderedRules(rules))
         .build();
   }
 
   @Test
   void shouldAcceptWhenAnyAccepts() {
-    when(rule1.accept(facts)).thenReturn(false);
-    when(rule2.accept(facts)).thenReturn(true);
+    lenient().when(rule1.accept(facts)).thenReturn(false);
+    lenient().when(rule2.accept(facts)).thenReturn(true);
 
     assertThat(anyCompositeRule.accept(facts)).isTrue();
   }
@@ -63,8 +81,8 @@ class AnyCompositeRuleTest extends BaseTest {
 
   @Test
   void shouldExecuteLastAcceptedRule() {
-    when(rule1.accept(facts)).thenReturn(false);
-    when(rule2.accept(facts)).thenReturn(true);
+    lenient().when(rule1.accept(facts)).thenReturn(false);
+    lenient().when(rule2.accept(facts)).thenReturn(true);
 
     anyCompositeRule.accept(facts);
     anyCompositeRule.execute(facts);
@@ -83,8 +101,8 @@ class AnyCompositeRuleTest extends BaseTest {
 
   @Test
   void shouldNotExecuteLastAcceptedRuleMultipleTimes() {
-    when(rule1.accept(facts)).thenReturn(false);
-    when(rule2.accept(facts)).thenReturn(true);
+    lenient().when(rule1.accept(facts)).thenReturn(false);
+    lenient().when(rule2.accept(facts)).thenReturn(true);
 
     anyCompositeRule.accept(facts);
     anyCompositeRule.execute(facts);

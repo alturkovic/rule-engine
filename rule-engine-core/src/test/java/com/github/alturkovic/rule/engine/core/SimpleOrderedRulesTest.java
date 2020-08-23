@@ -82,11 +82,7 @@ class SimpleOrderedRulesTest {
   }
 
   private void assertRuleOrder() {
-    final var rules = new SimpleOrderedRules();
-    rules.register(rule3);
-    rules.register(rule1);
-    rules.register(rule2);
-
+    final var rules = new SimpleOrderedRules(rule3, rule1, rule2);
     assertThat(rules).containsExactly(rule1, rule2, rule3);
   }
 }

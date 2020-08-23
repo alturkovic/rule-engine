@@ -28,5 +28,4 @@ package com.github.alturkovic.rule.engine.api;
  * Encapsulates multiple rules.
  */
 public interface Rules extends Iterable<Rule> {
-  void register(Rule rule);
 }

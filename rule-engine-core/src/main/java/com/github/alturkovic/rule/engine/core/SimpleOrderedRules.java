@@ -28,21 +28,31 @@ import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.api.Rules;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Holds rules in a TreeSet ensuring their natural ordering as described in {@link Rule#compareTo(Rule)}.
+ * Holds rules in a {@link SortedSet} ensuring their natural ordering as described in {@link Rule#compareTo(Rule)}.
  */
 @ToString
-@NoArgsConstructor
+@EqualsAndHashCode
+@AllArgsConstructor
 public class SimpleOrderedRules implements Rules {
-  private final Set<Rule> rules = new TreeSet<>();
+  private final SortedSet<Rule> rules;
 
-  @Override
-  public void register(final Rule rule) {
-    rules.add(rule);
+  public SimpleOrderedRules() {
+    this.rules = new TreeSet<>();
+  }
+
+  public SimpleOrderedRules(final Set<Rule> rules) {
+    this.rules = new TreeSet<>(rules);
+  }
+
+  public SimpleOrderedRules(final Rule... rules) {
+    this(Set.of(rules));
   }
 
   @Override

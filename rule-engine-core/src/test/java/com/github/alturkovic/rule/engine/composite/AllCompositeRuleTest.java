@@ -24,21 +24,38 @@
 
 package com.github.alturkovic.rule.engine.composite;
 
-import com.github.alturkovic.rule.engine.BaseTest;
+import com.github.alturkovic.rule.engine.api.Facts;
+import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
+import java.util.TreeSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class AllCompositeRuleTest extends BaseTest {
+@ExtendWith(MockitoExtension.class)
+class AllCompositeRuleTest {
   private AllCompositeRule allCompositeRule;
+
+  @Mock
+  private Rule rule1, rule2;
+
+  @Mock
+  private Facts facts;
 
   @BeforeEach
   public void setupCompositeRule() {
+    final var rules = new TreeSet<Rule>();
+    rules.add(rule1);
+    rules.add(rule2);
+
     this.allCompositeRule = AllCompositeRule.builder()
-        .rules(rules)
+        .rules(new SimpleOrderedRules(rules))
         .build();
   }
 

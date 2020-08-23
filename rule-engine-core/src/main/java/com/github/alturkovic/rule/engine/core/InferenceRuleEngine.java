@@ -22,41 +22,53 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine;
+package com.github.alturkovic.rule.engine.core;
 
 import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.api.RuleEngine;
 import com.github.alturkovic.rule.engine.api.RuleEngineListener;
 import com.github.alturkovic.rule.engine.api.Rules;
-import com.github.alturkovic.rule.engine.core.DefaultRuleEngine;
-import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Set;
+import java.util.TreeSet;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
-@ExtendWith(MockitoExtension.class)
-public abstract class BaseTest {
+/**
+ * This implementation will keep firing rules that {@link Rule#accept(Facts) accept} the given {@link Facts} until no rules accept them.
+ */
+@Slf4j
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor
+public class InferenceRuleEngine implements RuleEngine {
+  private final RuleEngineListener listener;
+  private final Rules rules;
 
-  @Mock
-  protected Rule rule1, rule2;
+  @Override
+  public void evaluate(final Facts facts) {
+    Set<Rule> selectedRules;
+    do {
+      log.debug("Selecting candidate rules using: {}", facts);
+      selectedRules = selectCandidates(facts);
+      if (!selectedRules.isEmpty()) {
+        final var engine = new DefaultRuleEngine(listener, new SimpleOrderedRules(selectedRules));
+        engine.evaluate(facts);
+      } else {
+        log.debug("No candidate rules found using: {}", facts);
+      }
+    } while (!selectedRules.isEmpty());
+  }
 
-  @Mock
-  protected Facts facts;
-
-  @Mock
-  protected RuleEngineListener listener;
-
-  protected DefaultRuleEngine engine;
-
-  protected Rules rules;
-
-  @BeforeEach
-  public void setup() {
-    rules = new SimpleOrderedRules();
-    rules.register(rule1);
-    rules.register(rule2);
-
-    engine = new DefaultRuleEngine(listener, rules);
+  private Set<Rule> selectCandidates(final Facts facts) {
+    final var candidates = new TreeSet<Rule>();
+    for (final var rule : rules) {
+      if (rule.accept(facts)) {
+        candidates.add(rule);
+      }
+    }
+    return candidates;
   }
 }
