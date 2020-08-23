@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.listener;
 
 import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SpecificRuleEngineListenerTest {
+class SpecificRuleListenerTest {
 
   @Mock
   private Rule rule;
@@ -56,33 +56,33 @@ class SpecificRuleEngineListenerTest {
   @Mock
   private RuleEngineListener listener;
 
-  private SpecificRuleEngineListener specificRuleEngineListener;
+  private SpecificRuleListener specificRuleListener;
 
   @BeforeEach
   public void setup() {
-    specificRuleEngineListener = new SpecificRuleEngineListener(rule, listener);
+    specificRuleListener = new SpecificRuleListener(rule, listener);
   }
 
   @Test
   void shouldStopBeforeEvaluationOnSpecificRule() {
     when(listener.shouldStopBeforeEvaluation(rule, facts)).thenReturn(true);
 
-    assertThat(specificRuleEngineListener.shouldStopBeforeEvaluation(rule, facts)).isTrue();
-    assertThat(specificRuleEngineListener.shouldStopBeforeEvaluation(anotherRule, facts)).isFalse();
+    assertThat(specificRuleListener.shouldStopBeforeEvaluation(rule, facts)).isTrue();
+    assertThat(specificRuleListener.shouldStopBeforeEvaluation(anotherRule, facts)).isFalse();
   }
 
   @Test
   void shouldCallBeforeConditionOnSpecificRule() {
-    specificRuleEngineListener.beforeCondition(rule, facts);
-    specificRuleEngineListener.beforeCondition(anotherRule, facts);
+    specificRuleListener.beforeCondition(rule, facts);
+    specificRuleListener.beforeCondition(anotherRule, facts);
 
     verify(listener, times(1)).beforeCondition(any(), eq(facts));
   }
 
   @Test
   void shouldCallAfterConditionOnSpecificRule() {
-    specificRuleEngineListener.afterCondition(rule, facts, true);
-    specificRuleEngineListener.afterCondition(anotherRule, facts, true);
+    specificRuleListener.afterCondition(rule, facts, true);
+    specificRuleListener.afterCondition(anotherRule, facts, true);
 
     verify(listener, times(1)).afterCondition(any(), eq(facts), eq(true));
   }
@@ -90,24 +90,24 @@ class SpecificRuleEngineListenerTest {
   @Test
   void shouldCallOnConditionErrorOnSpecificRule() {
     final var exception = new IllegalStateException();
-    specificRuleEngineListener.onConditionError(rule, facts, exception);
-    specificRuleEngineListener.onConditionError(anotherRule, facts, exception);
+    specificRuleListener.onConditionError(rule, facts, exception);
+    specificRuleListener.onConditionError(anotherRule, facts, exception);
 
     verify(listener, times(1)).onConditionError(any(), eq(facts), eq(exception));
   }
 
   @Test
   void shouldCallBeforeActionOnSpecificRule() {
-    specificRuleEngineListener.beforeAction(rule, facts);
-    specificRuleEngineListener.beforeAction(anotherRule, facts);
+    specificRuleListener.beforeAction(rule, facts);
+    specificRuleListener.beforeAction(anotherRule, facts);
 
     verify(listener, times(1)).beforeAction(any(), eq(facts));
   }
 
   @Test
   void shouldCallAfterActionOnSpecificRule() {
-    specificRuleEngineListener.afterAction(rule, facts);
-    specificRuleEngineListener.afterAction(anotherRule, facts);
+    specificRuleListener.afterAction(rule, facts);
+    specificRuleListener.afterAction(anotherRule, facts);
 
     verify(listener, times(1)).afterAction(any(), eq(facts));
   }
@@ -115,8 +115,8 @@ class SpecificRuleEngineListenerTest {
   @Test
   void shouldCallOnActionErrorOnSpecificRule() {
     final var exception = new IllegalStateException();
-    specificRuleEngineListener.onActionError(rule, facts, exception);
-    specificRuleEngineListener.onActionError(anotherRule, facts, exception);
+    specificRuleListener.onActionError(rule, facts, exception);
+    specificRuleListener.onActionError(anotherRule, facts, exception);
 
     verify(listener, times(1)).onActionError(any(), eq(facts), eq(exception));
   }
@@ -125,7 +125,7 @@ class SpecificRuleEngineListenerTest {
   void shouldStopAfterEvaluationOnSpecificRule() {
     when(listener.shouldStopAfterEvaluation(eq(rule), eq(facts), eq(true), isNull())).thenReturn(true);
 
-    assertThat(specificRuleEngineListener.shouldStopAfterEvaluation(rule, facts, true, null)).isTrue();
-    assertThat(specificRuleEngineListener.shouldStopAfterEvaluation(anotherRule, facts, true, null)).isFalse();
+    assertThat(specificRuleListener.shouldStopAfterEvaluation(rule, facts, true, null)).isTrue();
+    assertThat(specificRuleListener.shouldStopAfterEvaluation(anotherRule, facts, true, null)).isFalse();
   }
 }

@@ -22,25 +22,30 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.listener;
 
-import com.github.alturkovic.rule.engine.api.Action;
 import com.github.alturkovic.rule.engine.api.Facts;
-import java.util.List;
+import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.api.RuleEngineListener;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Singular;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
-@Data
-@Builder
+@Slf4j
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
-public class CompositeAction implements Action {
-  @Singular
-  private final List<Action> actions;
+public class PriorityThresholdListener implements RuleEngineListener {
+  private final int threshold;
 
   @Override
-  public void execute(final Facts facts) {
-    actions.forEach(action -> action.execute(facts));
+  public boolean shouldStopBeforeEvaluation(final Rule rule, final Facts facts) {
+    if (rule.getPriority() > threshold) {
+      log.debug("Rule priority threshold ({}) exceeded at rule '{}', other rules will be skipped", threshold, rule);
+      return true;
+    }
+
+    return false;
   }
 }

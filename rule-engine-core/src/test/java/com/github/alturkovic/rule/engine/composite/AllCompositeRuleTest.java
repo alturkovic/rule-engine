@@ -22,37 +22,47 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.example;
+package com.github.alturkovic.rule.engine.composite;
 
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
-import com.github.alturkovic.rule.engine.composite.AnyCompositeRule;
-import com.github.alturkovic.rule.engine.core.SimpleFacts;
-import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
-import java.util.Collections;
+import com.github.alturkovic.rule.engine.BaseTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class AnyCompositeRuleApplication {
-  public static void main(final String[] args) {
-    final var rule1 = newRule("Rule1")
-        .priority(1)
-        .then(f -> System.out.print("1"))
+class AllCompositeRuleTest extends BaseTest {
+  private AllCompositeRule allCompositeRule;
+
+  @BeforeEach
+  public void setupCompositeRule() {
+    this.allCompositeRule = AllCompositeRule.builder()
+        .rules(rules)
         .build();
+  }
 
-    final var rule2 = newRule("Rule2")
-        .priority(2)
-        .then(f -> System.out.print("2"))
-        .build();
+  @Test
+  void shouldAcceptWhenAllAccept() {
+    when(rule1.accept(facts)).thenReturn(true);
+    when(rule2.accept(facts)).thenReturn(true);
 
-    final var rules = new SimpleOrderedRules();
-    rules.register(rule1);
-    rules.register(rule2);
+    assertThat(allCompositeRule.accept(facts)).isTrue();
+  }
 
-    final var engine = new DefaultRuleEngineBuilder()
-        .rule(new AnyCompositeRule("AnyCompositeRule", null, Rule.DEFAULT_PRIORITY, rules))
-        .build();
+  @Test
+  void shouldNotAcceptWhenAnyDeclines() {
+    when(rule1.accept(facts)).thenReturn(true);
+    when(rule2.accept(facts)).thenReturn(false);
 
-    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
+    assertThat(allCompositeRule.accept(facts)).isFalse();
+  }
+
+  @Test
+  void shouldExecuteAllRules() {
+    allCompositeRule.execute(facts);
+
+    verify(rule1).execute(facts);
+    verify(rule2).execute(facts);
   }
 }

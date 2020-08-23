@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.composite;
 
 import com.github.alturkovic.rule.engine.BaseTest;
 import org.junit.jupiter.api.BeforeEach;

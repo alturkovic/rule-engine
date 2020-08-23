@@ -22,36 +22,27 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.listener;
 
 import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Builder;
+import com.github.alturkovic.rule.engine.api.RuleEngineListener;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class AllCompositeRule extends CompositeRule {
-
-  @Builder
-  public AllCompositeRule(final String name, final String description, final int priority, final Rules rules) {
-    super(name, description, priority, rules);
-  }
+@Slf4j
+@ToString
+@EqualsAndHashCode
+public class SkipAfterDeclinedRuleListener implements RuleEngineListener {
 
   @Override
-  public boolean accept(final Facts facts) {
-    for (final Rule rule : rules) {
-      if (!rule.accept(facts)) {
-        return false;
-      }
+  public boolean shouldStopAfterEvaluation(final Rule rule, final Facts facts, final boolean accepted, final Exception e) {
+    if (!accepted) {
+      log.debug("Rule '{}' has not been accepted, other rules will be skipped", rule);
+      return true;
     }
-    return true;
-  }
 
-  @Override
-  public void execute(final Facts facts) {
-    rules.forEach(rule -> rule.execute(facts));
+    return false;
   }
 }

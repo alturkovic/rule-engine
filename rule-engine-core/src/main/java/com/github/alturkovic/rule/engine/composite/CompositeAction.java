@@ -22,42 +22,25 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.composite;
 
+import com.github.alturkovic.rule.engine.api.Action;
 import com.github.alturkovic.rule.engine.api.Facts;
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
+import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Data;
+import lombok.Singular;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class AnyCompositeRule extends CompositeRule {
-  private static final ThreadLocal<Rule> LAST_ACCEPTED_RULE = new ThreadLocal<>();
-
-  @Builder
-  public AnyCompositeRule(final String name, final String description, final int priority, final Rules rules) {
-    super(name, description, priority, rules);
-  }
-
-  @Override
-  public boolean accept(final Facts facts) {
-    for (final Rule rule : rules) {
-      if (rule.accept(facts)) {
-        LAST_ACCEPTED_RULE.set(rule);
-        return true;
-      }
-    }
-    return false;
-  }
+@Data
+@Builder
+@AllArgsConstructor
+public class CompositeAction implements Action {
+  @Singular
+  private final List<Action> actions;
 
   @Override
   public void execute(final Facts facts) {
-    final var rule = LAST_ACCEPTED_RULE.get();
-    if (rule != null) {
-      LAST_ACCEPTED_RULE.remove();
-      rule.execute(facts);
-    }
+    actions.forEach(action -> action.execute(facts));
   }
 }

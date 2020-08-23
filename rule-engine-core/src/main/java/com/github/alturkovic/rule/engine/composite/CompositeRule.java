@@ -22,37 +22,16 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.example;
+package com.github.alturkovic.rule.engine.composite;
 
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
-import com.github.alturkovic.rule.engine.composite.AnyCompositeRule;
-import com.github.alturkovic.rule.engine.core.SimpleFacts;
-import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
-import java.util.Collections;
+import com.github.alturkovic.rule.engine.api.Rules;
+import lombok.Data;
 
-import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
-
-public class AnyCompositeRuleApplication {
-  public static void main(final String[] args) {
-    final var rule1 = newRule("Rule1")
-        .priority(1)
-        .then(f -> System.out.print("1"))
-        .build();
-
-    final var rule2 = newRule("Rule2")
-        .priority(2)
-        .then(f -> System.out.print("2"))
-        .build();
-
-    final var rules = new SimpleOrderedRules();
-    rules.register(rule1);
-    rules.register(rule2);
-
-    final var engine = new DefaultRuleEngineBuilder()
-        .rule(new AnyCompositeRule("AnyCompositeRule", null, Rule.DEFAULT_PRIORITY, rules))
-        .build();
-
-    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
-  }
+@Data
+public abstract class CompositeRule implements Rule {
+  private final String name;
+  private final String description;
+  private final int priority;
+  protected final Rules rules;
 }

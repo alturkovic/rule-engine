@@ -26,9 +26,9 @@ package com.github.alturkovic.rule.engine.example;
 
 import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
+import com.github.alturkovic.rule.engine.composite.AllCompositeRule;
 import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
-import com.github.alturkovic.rule.engine.support.AllCompositeRule;
 
 import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
 

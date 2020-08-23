@@ -22,37 +22,36 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.example;
+package com.github.alturkovic.rule.engine.composite;
 
+import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
-import com.github.alturkovic.rule.engine.composite.AnyCompositeRule;
-import com.github.alturkovic.rule.engine.core.SimpleFacts;
-import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
-import java.util.Collections;
+import com.github.alturkovic.rule.engine.api.Rules;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class AllCompositeRule extends CompositeRule {
 
-public class AnyCompositeRuleApplication {
-  public static void main(final String[] args) {
-    final var rule1 = newRule("Rule1")
-        .priority(1)
-        .then(f -> System.out.print("1"))
-        .build();
+  @Builder
+  public AllCompositeRule(final String name, final String description, final int priority, final Rules rules) {
+    super(name, description, priority, rules);
+  }
 
-    final var rule2 = newRule("Rule2")
-        .priority(2)
-        .then(f -> System.out.print("2"))
-        .build();
+  @Override
+  public boolean accept(final Facts facts) {
+    for (final Rule rule : rules) {
+      if (!rule.accept(facts)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-    final var rules = new SimpleOrderedRules();
-    rules.register(rule1);
-    rules.register(rule2);
-
-    final var engine = new DefaultRuleEngineBuilder()
-        .rule(new AnyCompositeRule("AnyCompositeRule", null, Rule.DEFAULT_PRIORITY, rules))
-        .build();
-
-    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
+  @Override
+  public void execute(final Facts facts) {
+    rules.forEach(rule -> rule.execute(facts));
   }
 }

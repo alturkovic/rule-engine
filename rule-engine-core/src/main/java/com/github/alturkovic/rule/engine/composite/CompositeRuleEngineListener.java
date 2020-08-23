@@ -22,77 +22,64 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.composite;
 
 import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.api.RuleEngineListener;
+import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Singular;
 import lombok.ToString;
 
+@Builder
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class SpecificRuleEngineListener implements RuleEngineListener {
-  private final Rule rule;
-  private final RuleEngineListener listener;
+public class CompositeRuleEngineListener implements RuleEngineListener {
+
+  @Singular
+  private final List<RuleEngineListener> listeners;
 
   @Override
   public boolean shouldStopBeforeEvaluation(final Rule rule, final Facts facts) {
-    if (this.rule.equals(rule)) {
-      return listener.shouldStopBeforeEvaluation(rule, facts);
-    }
-    return false;
+    return listeners.stream().allMatch(l -> l.shouldStopBeforeEvaluation(rule, facts));
   }
 
   @Override
   public void beforeCondition(final Rule rule, final Facts facts) {
-    if (this.rule.equals(rule)) {
-      listener.beforeCondition(rule, facts);
-    }
+    listeners.forEach(l -> l.beforeCondition(rule, facts));
   }
 
   @Override
   public void afterCondition(final Rule rule, final Facts facts, final boolean accepted) {
-    if (this.rule.equals(rule)) {
-      listener.afterCondition(rule, facts, accepted);
-    }
+    listeners.forEach(l -> l.afterCondition(rule, facts, accepted));
   }
 
   @Override
   public void onConditionError(final Rule rule, final Facts facts, final Exception e) {
-    if (this.rule.equals(rule)) {
-      listener.onConditionError(rule, facts, e);
-    }
+    listeners.forEach(l -> l.onConditionError(rule, facts, e));
   }
 
   @Override
   public void beforeAction(final Rule rule, final Facts facts) {
-    if (this.rule.equals(rule)) {
-      listener.beforeAction(rule, facts);
-    }
+    listeners.forEach(l -> l.beforeAction(rule, facts));
   }
 
   @Override
   public void afterAction(final Rule rule, final Facts facts) {
-    if (this.rule.equals(rule)) {
-      listener.afterAction(rule, facts);
-    }
+    listeners.forEach(l -> l.afterAction(rule, facts));
   }
 
   @Override
   public void onActionError(final Rule rule, final Facts facts, final Exception e) {
-    if (this.rule.equals(rule)) {
-      listener.onActionError(rule, facts, e);
-    }
+    listeners.forEach(l -> l.onActionError(rule, facts, e));
   }
 
   @Override
   public boolean shouldStopAfterEvaluation(final Rule rule, final Facts facts, final boolean accepted, final Exception e) {
-    if (this.rule.equals(rule)) {
-      return listener.shouldStopAfterEvaluation(rule, facts, accepted, e);
-    }
-    return false;
+    return listeners.stream().allMatch(l -> l.shouldStopAfterEvaluation(rule, facts, accepted, e));
   }
 }

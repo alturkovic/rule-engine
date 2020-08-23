@@ -22,37 +22,39 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.example;
+package com.github.alturkovic.rule.engine.listener;
 
+import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
-import com.github.alturkovic.rule.engine.composite.AnyCompositeRule;
-import com.github.alturkovic.rule.engine.core.SimpleFacts;
-import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
-import java.util.Collections;
+import com.github.alturkovic.rule.engine.api.RuleEngineListener;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class AnyCompositeRuleApplication {
-  public static void main(final String[] args) {
-    final var rule1 = newRule("Rule1")
-        .priority(1)
-        .then(f -> System.out.print("1"))
-        .build();
+@ExtendWith(MockitoExtension.class)
+class SkipAfterDeclinedRuleListenerTest {
 
-    final var rule2 = newRule("Rule2")
-        .priority(2)
-        .then(f -> System.out.print("2"))
-        .build();
+  private final RuleEngineListener skipAfterDeclinedRuleListener = new SkipAfterDeclinedRuleListener();
 
-    final var rules = new SimpleOrderedRules();
-    rules.register(rule1);
-    rules.register(rule2);
+  @Mock
+  private Rule rule;
 
-    final var engine = new DefaultRuleEngineBuilder()
-        .rule(new AnyCompositeRule("AnyCompositeRule", null, Rule.DEFAULT_PRIORITY, rules))
-        .build();
+  @Mock
+  private Facts facts;
 
-    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
+  @Mock
+  private Exception e;
+
+  @Test
+  void shouldStopAfterEvaluationWhenRuleHasBeenDeclined() {
+    assertThat(skipAfterDeclinedRuleListener.shouldStopAfterEvaluation(rule, facts, false, e)).isTrue();
+  }
+
+  @Test
+  void shouldNotStopAfterEvaluationWhenRuleHasBeenAccepted() {
+    assertThat(skipAfterDeclinedRuleListener.shouldStopAfterEvaluation(rule, facts, true, e)).isFalse();
   }
 }

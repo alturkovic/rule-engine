@@ -22,16 +22,27 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.listener;
 
+import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Data;
+import com.github.alturkovic.rule.engine.api.RuleEngineListener;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
-@Data
-public abstract class CompositeRule implements Rule {
-  private final String name;
-  private final String description;
-  private final int priority;
-  protected final Rules rules;
+@Slf4j
+@ToString
+@EqualsAndHashCode
+public class SkipAfterFailedRuleListener implements RuleEngineListener {
+
+  @Override
+  public boolean shouldStopAfterEvaluation(final Rule rule, final Facts facts, final boolean accepted, final Exception e) {
+    if (e != null) {
+      log.debug("Rule '{}' has failed execution, other rules will be skipped", rule);
+      return true;
+    }
+
+    return false;
+  }
 }

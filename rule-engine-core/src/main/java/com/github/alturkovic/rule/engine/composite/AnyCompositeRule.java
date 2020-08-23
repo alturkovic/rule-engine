@@ -22,47 +22,42 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.composite;
 
-import com.github.alturkovic.rule.engine.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.github.alturkovic.rule.engine.api.Facts;
+import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.api.Rules;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class AnyCompositeRule extends CompositeRule {
+  private static final ThreadLocal<Rule> LAST_ACCEPTED_RULE = new ThreadLocal<>();
 
-class AllCompositeRuleTest extends BaseTest {
-  private AllCompositeRule allCompositeRule;
-
-  @BeforeEach
-  public void setupCompositeRule() {
-    this.allCompositeRule = AllCompositeRule.builder()
-        .rules(rules)
-        .build();
+  @Builder
+  public AnyCompositeRule(final String name, final String description, final int priority, final Rules rules) {
+    super(name, description, priority, rules);
   }
 
-  @Test
-  void shouldAcceptWhenAllAccept() {
-    when(rule1.accept(facts)).thenReturn(true);
-    when(rule2.accept(facts)).thenReturn(true);
-
-    assertThat(allCompositeRule.accept(facts)).isTrue();
+  @Override
+  public boolean accept(final Facts facts) {
+    for (final Rule rule : rules) {
+      if (rule.accept(facts)) {
+        LAST_ACCEPTED_RULE.set(rule);
+        return true;
+      }
+    }
+    return false;
   }
 
-  @Test
-  void shouldNotAcceptWhenAnyDeclines() {
-    when(rule1.accept(facts)).thenReturn(true);
-    when(rule2.accept(facts)).thenReturn(false);
-
-    assertThat(allCompositeRule.accept(facts)).isFalse();
-  }
-
-  @Test
-  void shouldExecuteAllRules() {
-    allCompositeRule.execute(facts);
-
-    verify(rule1).execute(facts);
-    verify(rule2).execute(facts);
+  @Override
+  public void execute(final Facts facts) {
+    final var rule = LAST_ACCEPTED_RULE.get();
+    if (rule != null) {
+      LAST_ACCEPTED_RULE.remove();
+      rule.execute(facts);
+    }
   }
 }

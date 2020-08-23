@@ -22,37 +22,36 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.example;
+package com.github.alturkovic.rule.engine.composite;
 
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
-import com.github.alturkovic.rule.engine.composite.AnyCompositeRule;
-import com.github.alturkovic.rule.engine.core.SimpleFacts;
-import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
-import java.util.Collections;
+import com.github.alturkovic.rule.engine.api.Action;
+import com.github.alturkovic.rule.engine.api.Facts;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
+import static org.mockito.Mockito.verify;
 
-public class AnyCompositeRuleApplication {
-  public static void main(final String[] args) {
-    final var rule1 = newRule("Rule1")
-        .priority(1)
-        .then(f -> System.out.print("1"))
+@ExtendWith(MockitoExtension.class)
+class CompositeActionTest {
+
+  @Mock
+  private Action action1, action2;
+
+  @Mock
+  private Facts facts;
+
+  @Test
+  void shouldExecuteAll() {
+    final var compositeAction = CompositeAction.builder()
+        .action(action1)
+        .action(action2)
         .build();
 
-    final var rule2 = newRule("Rule2")
-        .priority(2)
-        .then(f -> System.out.print("2"))
-        .build();
+    compositeAction.execute(facts);
 
-    final var rules = new SimpleOrderedRules();
-    rules.register(rule1);
-    rules.register(rule2);
-
-    final var engine = new DefaultRuleEngineBuilder()
-        .rule(new AnyCompositeRule("AnyCompositeRule", null, Rule.DEFAULT_PRIORITY, rules))
-        .build();
-
-    engine.evaluate(new SimpleFacts(Collections.emptyMap()));
+    verify(action1).execute(facts);
+    verify(action2).execute(facts);
   }
 }

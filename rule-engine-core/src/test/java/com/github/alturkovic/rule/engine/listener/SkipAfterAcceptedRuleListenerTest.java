@@ -22,36 +22,39 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.support;
+package com.github.alturkovic.rule.engine.listener;
 
-import com.github.alturkovic.rule.engine.api.Action;
 import com.github.alturkovic.rule.engine.api.Facts;
+import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.api.RuleEngineListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class CompositeActionTest {
+class SkipAfterAcceptedRuleListenerTest {
+
+  private final RuleEngineListener skipAfterAcceptedRuleListener = new SkipAfterAcceptedRuleListener();
 
   @Mock
-  private Action action1, action2;
+  private Rule rule;
 
   @Mock
   private Facts facts;
 
+  @Mock
+  private Exception e;
+
   @Test
-  void shouldExecuteAll() {
-    final var compositeAction = CompositeAction.builder()
-        .action(action1)
-        .action(action2)
-        .build();
+  void shouldStopAfterEvaluationWhenRuleHasBeenAccepted() {
+    assertThat(skipAfterAcceptedRuleListener.shouldStopAfterEvaluation(rule, facts, true, e)).isTrue();
+  }
 
-    compositeAction.execute(facts);
-
-    verify(action1).execute(facts);
-    verify(action2).execute(facts);
+  @Test
+  void shouldNotStopAfterEvaluationWhenRuleHasBeenDeclined() {
+    assertThat(skipAfterAcceptedRuleListener.shouldStopAfterEvaluation(rule, facts, false, e)).isFalse();
   }
 }
