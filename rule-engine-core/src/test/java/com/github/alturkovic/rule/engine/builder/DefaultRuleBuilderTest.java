@@ -37,7 +37,7 @@ import static org.mockito.Mockito.mock;
 class DefaultRuleBuilderTest {
 
   @Test
-  public void shouldBuild() {
+  void shouldBuild() {
     final var name = "Rule";
     final var description = "Description";
     final var priority = 1;

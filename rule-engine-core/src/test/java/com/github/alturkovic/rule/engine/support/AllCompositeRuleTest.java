@@ -43,7 +43,7 @@ class AllCompositeRuleTest extends BaseTest {
   }
 
   @Test
-  public void shouldAcceptWhenAllAccept() {
+  void shouldAcceptWhenAllAccept() {
     when(rule1.accept(facts)).thenReturn(true);
     when(rule2.accept(facts)).thenReturn(true);
 
@@ -51,7 +51,7 @@ class AllCompositeRuleTest extends BaseTest {
   }
 
   @Test
-  public void shouldNotAcceptWhenAnyDeclines() {
+  void shouldNotAcceptWhenAnyDeclines() {
     when(rule1.accept(facts)).thenReturn(true);
     when(rule2.accept(facts)).thenReturn(false);
 
@@ -59,7 +59,7 @@ class AllCompositeRuleTest extends BaseTest {
   }
 
   @Test
-  public void shouldExecuteAllRules() {
+  void shouldExecuteAllRules() {
     allCompositeRule.execute(facts);
 
     verify(rule1).execute(facts);

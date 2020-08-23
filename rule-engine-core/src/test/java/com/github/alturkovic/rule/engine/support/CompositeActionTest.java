@@ -43,7 +43,7 @@ class CompositeActionTest {
   private Facts facts;
 
   @Test
-  public void shouldExecuteAll() {
+  void shouldExecuteAll() {
     final var compositeAction = CompositeAction.builder()
         .action(action1)
         .action(action2)

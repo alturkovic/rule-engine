@@ -60,7 +60,7 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldStopBeforeEvaluationOnSpecificRuleWhenAllReturnTrue() {
+  void shouldStopBeforeEvaluationOnSpecificRuleWhenAllReturnTrue() {
     when(listener1.shouldStopBeforeEvaluation(rule, facts)).thenReturn(true);
     when(listener2.shouldStopBeforeEvaluation(rule, facts)).thenReturn(true);
 
@@ -68,7 +68,7 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldNotStopBeforeEvaluationOnSpecificRuleWhenAnyReturnsFalse() {
+  void shouldNotStopBeforeEvaluationOnSpecificRuleWhenAnyReturnsFalse() {
     when(listener1.shouldStopBeforeEvaluation(rule, facts)).thenReturn(true);
     when(listener2.shouldStopBeforeEvaluation(rule, facts)).thenReturn(false);
 
@@ -76,7 +76,7 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldCallBeforeConditionOnSpecificRule() {
+  void shouldCallBeforeConditionOnSpecificRule() {
     compositeRuleEngineListener.beforeCondition(rule, facts);
 
     verify(listener1).beforeCondition(eq(rule), eq(facts));
@@ -84,7 +84,7 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldCallAfterConditionOnSpecificRule() {
+  void shouldCallAfterConditionOnSpecificRule() {
     compositeRuleEngineListener.afterCondition(rule, facts, true);
 
     verify(listener1).afterCondition(eq(rule), eq(facts), eq(true));
@@ -92,7 +92,7 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldCallOnConditionErrorOnSpecificRule() {
+  void shouldCallOnConditionErrorOnSpecificRule() {
     final var exception = new IllegalStateException();
     compositeRuleEngineListener.onConditionError(rule, facts, exception);
 
@@ -101,7 +101,7 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldCallBeforeActionOnSpecificRule() {
+  void shouldCallBeforeActionOnSpecificRule() {
     compositeRuleEngineListener.beforeAction(rule, facts);
 
     verify(listener1).beforeAction(eq(rule), eq(facts));
@@ -109,14 +109,14 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldCallAfterActionOnSpecificRule() {
+  void shouldCallAfterActionOnSpecificRule() {
     compositeRuleEngineListener.afterAction(rule, facts);
 
     verify(listener1).afterAction(eq(rule), eq(facts));
   }
 
   @Test
-  public void shouldCallOnActionErrorOnSpecificRule() {
+  void shouldCallOnActionErrorOnSpecificRule() {
     final var exception = new IllegalStateException();
     compositeRuleEngineListener.onActionError(rule, facts, exception);
 
@@ -125,7 +125,7 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldStopAfterEvaluationOnSpecificRuleWhenAllReturnTrue() {
+  void shouldStopAfterEvaluationOnSpecificRuleWhenAllReturnTrue() {
     when(listener1.shouldStopAfterEvaluation(eq(rule), eq(facts), eq(true), isNull())).thenReturn(true);
     when(listener2.shouldStopAfterEvaluation(eq(rule), eq(facts), eq(true), isNull())).thenReturn(true);
 
@@ -133,7 +133,7 @@ class CompositeRuleEngineListenerTest {
   }
 
   @Test
-  public void shouldNotStopAfterEvaluationOnSpecificRuleWhenAnyReturnsFalse() {
+  void shouldNotStopAfterEvaluationOnSpecificRuleWhenAnyReturnsFalse() {
     when(listener1.shouldStopAfterEvaluation(eq(rule), eq(facts), eq(true), isNull())).thenReturn(true);
     when(listener2.shouldStopAfterEvaluation(eq(rule), eq(facts), eq(true), isNull())).thenReturn(false);
 

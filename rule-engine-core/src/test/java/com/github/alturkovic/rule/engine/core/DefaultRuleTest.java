@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 class DefaultRuleTest {
 
   @Test
-  public void shouldBeDescribed() {
+  void shouldBeDescribed() {
     final var name = "Rule";
     final var description = "Description";
     final var priority = 1;
@@ -53,7 +53,7 @@ class DefaultRuleTest {
   }
 
   @Test
-  public void shouldDelegateAcceptToCondition() {
+  void shouldDelegateAcceptToCondition() {
     final var facts = mock(Facts.class);
     final var condition = mock(Condition.class);
 
@@ -67,7 +67,7 @@ class DefaultRuleTest {
   }
 
   @Test
-  public void shouldDelegateExecuteToAction() {
+  void shouldDelegateExecuteToAction() {
     final var facts = mock(Facts.class);
     final var action = mock(Action.class);
 

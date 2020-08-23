@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 class DefaultRuleEngineTest extends BaseTest {
 
   @Test
-  public void shouldExecuteAcceptedRules() {
+  void shouldExecuteAcceptedRules() {
     when(rule1.accept(facts)).thenReturn(true);
     when(rule2.accept(facts)).thenReturn(false);
 
@@ -50,7 +50,7 @@ class DefaultRuleEngineTest extends BaseTest {
   }
 
   @Test
-  public void shouldStopFurtherEvaluationBefore() {
+  void shouldStopFurtherEvaluationBefore() {
     when(listener.shouldStopBeforeEvaluation(rule1, facts)).thenReturn(false);
     when(listener.shouldStopBeforeEvaluation(rule2, facts)).thenReturn(true);
 
@@ -61,7 +61,7 @@ class DefaultRuleEngineTest extends BaseTest {
   }
 
   @Test
-  public void shouldListenBeforeCondition() {
+  void shouldListenBeforeCondition() {
     engine.evaluate(facts);
 
     final var inOrder = inOrder(rule1, rule2, listener);
@@ -72,7 +72,7 @@ class DefaultRuleEngineTest extends BaseTest {
   }
 
   @Test
-  public void shouldListenAfterCondition() {
+  void shouldListenAfterCondition() {
     when(rule1.accept(facts)).thenReturn(true);
     when(rule2.accept(facts)).thenReturn(false);
 
@@ -86,7 +86,7 @@ class DefaultRuleEngineTest extends BaseTest {
   }
 
   @Test
-  public void shouldListenOnConditionError() {
+  void shouldListenOnConditionError() {
     final var exception = new IllegalStateException();
     when(rule2.accept(facts)).thenThrow(exception);
 
@@ -99,7 +99,7 @@ class DefaultRuleEngineTest extends BaseTest {
   }
 
   @Test
-  public void shouldListenBeforeAction() {
+  void shouldListenBeforeAction() {
     when(rule1.accept(facts)).thenReturn(true);
     when(rule2.accept(facts)).thenReturn(true);
 
@@ -113,7 +113,7 @@ class DefaultRuleEngineTest extends BaseTest {
   }
 
   @Test
-  public void shouldListenAfterAction() {
+  void shouldListenAfterAction() {
     when(rule1.accept(facts)).thenReturn(true);
     when(rule2.accept(facts)).thenReturn(true);
 
@@ -127,7 +127,7 @@ class DefaultRuleEngineTest extends BaseTest {
   }
 
   @Test
-  public void shouldListenOnActionError() {
+  void shouldListenOnActionError() {
     final var exception = new IllegalStateException();
     when(rule1.accept(facts)).thenReturn(true);
     when(rule2.accept(facts)).thenReturn(true);
@@ -142,7 +142,7 @@ class DefaultRuleEngineTest extends BaseTest {
   }
 
   @Test
-  public void shouldStopFurtherEvaluationAfter() {
+  void shouldStopFurtherEvaluationAfter() {
     when(listener.shouldStopAfterEvaluation(eq(rule1), eq(facts), anyBoolean(), any())).thenReturn(true);
 
     engine.evaluate(facts);

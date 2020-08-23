@@ -41,7 +41,7 @@ class SimpleOrderedRulesTest {
   private Rule rule1, rule2, rule3;
 
   @Test
-  public void shouldOrderByPriority() {
+  void shouldOrderByPriority() {
     doNotMockCompareMethods();
 
     when(rule1.getPriority()).thenReturn(1);
@@ -52,7 +52,7 @@ class SimpleOrderedRulesTest {
   }
 
   @Test
-  public void shouldOrderByPriorityUsingExtremes() {
+  void shouldOrderByPriorityUsingExtremes() {
     doNotMockCompareMethods();
 
     when(rule1.getPriority()).thenReturn(Integer.MIN_VALUE);
@@ -62,7 +62,7 @@ class SimpleOrderedRulesTest {
   }
 
   @Test
-  public void shouldOrderByNameWhenPriorityIsSame() {
+  void shouldOrderByNameWhenPriorityIsSame() {
     doNotMockCompareMethods();
 
     when(rule1.getPriority()).thenReturn(1);

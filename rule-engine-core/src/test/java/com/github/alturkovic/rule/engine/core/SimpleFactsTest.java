@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SimpleFactsTest {
 
   @Test
-  public void shouldCheckDeclaredFacts() {
+  void shouldCheckDeclaredFacts() {
     final var facts = SimpleFacts.builder()
         .fact("fact1", 1)
         .build();
@@ -41,7 +41,7 @@ class SimpleFactsTest {
   }
 
   @Test
-  public void shouldReturnDeclaredFacts() {
+  void shouldReturnDeclaredFacts() {
     final var facts = SimpleFacts.builder()
         .fact("fact1", 1)
         .build();

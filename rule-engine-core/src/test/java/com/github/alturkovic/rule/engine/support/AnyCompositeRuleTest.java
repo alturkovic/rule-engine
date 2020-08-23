@@ -46,7 +46,7 @@ class AnyCompositeRuleTest extends BaseTest {
   }
 
   @Test
-  public void shouldAcceptWhenAnyAccepts() {
+  void shouldAcceptWhenAnyAccepts() {
     when(rule1.accept(facts)).thenReturn(false);
     when(rule2.accept(facts)).thenReturn(true);
 
@@ -54,7 +54,7 @@ class AnyCompositeRuleTest extends BaseTest {
   }
 
   @Test
-  public void shouldNotAcceptWhenAllDecline() {
+  void shouldNotAcceptWhenAllDecline() {
     when(rule1.accept(eq(facts))).thenReturn(false);
     when(rule2.accept(eq(facts))).thenReturn(false);
 
@@ -62,7 +62,7 @@ class AnyCompositeRuleTest extends BaseTest {
   }
 
   @Test
-  public void shouldExecuteLastAcceptedRule() {
+  void shouldExecuteLastAcceptedRule() {
     when(rule1.accept(facts)).thenReturn(false);
     when(rule2.accept(facts)).thenReturn(true);
 
@@ -74,7 +74,7 @@ class AnyCompositeRuleTest extends BaseTest {
   }
 
   @Test
-  public void shouldNotExecuteIfThereWasNoAcceptedRule() {
+  void shouldNotExecuteIfThereWasNoAcceptedRule() {
     anyCompositeRule.execute(facts);
 
     verify(rule1, never()).execute(facts);
@@ -82,7 +82,7 @@ class AnyCompositeRuleTest extends BaseTest {
   }
 
   @Test
-  public void shouldNotExecuteLastAcceptedRuleMultipleTimes() {
+  void shouldNotExecuteLastAcceptedRuleMultipleTimes() {
     when(rule1.accept(facts)).thenReturn(false);
     when(rule2.accept(facts)).thenReturn(true);
 

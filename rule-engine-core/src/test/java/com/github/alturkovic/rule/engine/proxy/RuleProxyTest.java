@@ -41,12 +41,12 @@ import static org.mockito.Mockito.when;
 class RuleProxyTest {
 
   @Test
-  public void shouldNotCreateProxyWithoutRuleAnnotation() {
+  void shouldNotCreateProxyWithoutRuleAnnotation() {
     assertThrows(IllegalArgumentException.class, () -> RuleProxy.asRule(new Object()));
   }
 
   @Test
-  public void shouldNotCreateProxyWithoutWellMethod() {
+  void shouldNotCreateProxyWithoutWellMethod() {
 
     @Rule
     class NoWhenProxy {
@@ -59,7 +59,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldNotCreateProxyWithWhenMethodThatDoesNotReturnBoolean() {
+  void shouldNotCreateProxyWithWhenMethodThatDoesNotReturnBoolean() {
 
     @Rule
     class InvalidReturnWhenProxy {
@@ -76,7 +76,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldNotCreateProxyWithWhenMethodThatExpectsNonFactArguments() {
+  void shouldNotCreateProxyWithWhenMethodThatExpectsNonFactArguments() {
 
     @Rule
     class InvalidArgumentsWhenProxy {
@@ -94,7 +94,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldNotCreateProxyWithoutThenMethod() {
+  void shouldNotCreateProxyWithoutThenMethod() {
 
     @Rule
     class UnvalidatedProxy {
@@ -108,7 +108,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldNotCreateProxyWithThenMethodThatExpectsNonFactArguments() {
+  void shouldNotCreateProxyWithThenMethodThatExpectsNonFactArguments() {
 
     @Rule
     class InvalidArgumentsThenProxy {
@@ -126,7 +126,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldUseDefinedValues() {
+  void shouldUseDefinedValues() {
     final var NAME = "My name";
     final var DESCRIPTION = "My description";
     final var PRIORITY = 7;
@@ -142,7 +142,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldUseGeneratedDefaultsWhenUndefined() {
+  void shouldUseGeneratedDefaultsWhenUndefined() {
 
     @Rule
     class UndefinedProxy {
@@ -167,7 +167,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldProxyToString() {
+  void shouldProxyToString() {
     final var toString = "Custom toString";
 
     @Rule
@@ -179,11 +179,11 @@ class RuleProxyTest {
     }
 
     final var rule = RuleProxy.asRule(new ToStringProxy());
-    assertThat(rule.toString()).isEqualTo(toString);
+    assertThat(rule).hasToString(toString);
   }
 
   @Test
-  public void shouldProxyCompareTo() {
+  void shouldProxyCompareTo() {
 
     @Rule
     @AllArgsConstructor
@@ -206,7 +206,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldCompareToRule() {
+  void shouldCompareToRule() {
     final var name = "Rule name";
     final var priority = 7;
 
@@ -226,7 +226,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldProxyHashCode() {
+  void shouldProxyHashCode() {
     final var name = "HashCode rule";
     final var priority = 7;
 
@@ -237,12 +237,12 @@ class RuleProxyTest {
     final var rule1 = RuleProxy.asRule(new HashCodeProxy());
     final var rule2 = RuleProxy.asRule(new HashCodeProxy());
 
-    assertThat(rule1.hashCode()).isEqualTo(rule1.hashCode());
-    assertThat(rule1.hashCode()).isEqualTo(rule2.hashCode());
+    assertThat(rule1).hasSameHashCodeAs(rule1);
+    assertThat(rule1).hasSameHashCodeAs(rule2);
   }
 
   @Test
-  public void shouldProxyEquals() {
+  void shouldProxyEquals() {
     final var name = "Equals rule";
     final var priority = 7;
 
@@ -265,7 +265,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldInjectFactsInProxiedMethods() {
+  void shouldInjectFactsInProxiedMethods() {
 
     @Rule
     class InjectionProxy {
@@ -312,7 +312,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldAccept() {
+  void shouldAccept() {
 
     @Rule
     class AcceptProxy {
@@ -335,7 +335,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldExecuteAllThenMethods() {
+  void shouldExecuteAllThenMethods() {
 
     @Rule
     class ExecuteProxy {
@@ -372,7 +372,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldNotAcceptIfWhenMethodFactIsUndeclared() {
+  void shouldNotAcceptIfWhenMethodFactIsUndeclared() {
 
     @Rule
     class UndeclaredWhenFactProxy {
@@ -393,7 +393,7 @@ class RuleProxyTest {
   }
 
   @Test
-  public void shouldFailIfThenMethodFactIsUndeclared() {
+  void shouldFailIfThenMethodFactIsUndeclared() {
 
     @Rule
     class UndeclaredThenFactProxy {
