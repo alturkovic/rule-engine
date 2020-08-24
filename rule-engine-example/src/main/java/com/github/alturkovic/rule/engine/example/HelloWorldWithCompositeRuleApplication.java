@@ -29,6 +29,7 @@ import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
 import com.github.alturkovic.rule.engine.composite.AllCompositeRule;
 import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
+import java.util.Set;
 
 import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
 
@@ -44,9 +45,7 @@ public class HelloWorldWithCompositeRuleApplication {
         .then(f -> System.out.println(f.<String>get("world")))
         .build();
 
-    final var rules = new SimpleOrderedRules();
-    rules.register(helloRule);
-    rules.register(worldRule);
+    final var rules = new SimpleOrderedRules(Set.of(helloRule, worldRule));
 
     final var engine = new DefaultRuleEngineBuilder()
         .rule(new AllCompositeRule("HelloWorldRule", null, Rule.DEFAULT_PRIORITY, rules))
