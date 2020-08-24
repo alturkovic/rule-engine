@@ -43,10 +43,6 @@ import lombok.ToString;
 public class SimpleOrderedRules implements Rules {
   private final SortedSet<Rule> rules;
 
-  public SimpleOrderedRules() {
-    this.rules = new TreeSet<>();
-  }
-
   public SimpleOrderedRules(final Set<Rule> rules) {
     this.rules = new TreeSet<>(rules);
   }
