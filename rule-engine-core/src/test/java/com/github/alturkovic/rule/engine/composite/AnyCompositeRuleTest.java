@@ -36,7 +36,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -65,8 +64,8 @@ class AnyCompositeRuleTest {
 
   @Test
   void shouldAcceptWhenAnyAccepts() {
-    lenient().when(rule1.accept(facts)).thenReturn(false);
-    lenient().when(rule2.accept(facts)).thenReturn(true);
+    when(rule1.accept(facts)).thenReturn(false);
+    when(rule2.accept(facts)).thenReturn(true);
 
     assertThat(anyCompositeRule.accept(facts)).isTrue();
   }
@@ -81,8 +80,8 @@ class AnyCompositeRuleTest {
 
   @Test
   void shouldExecuteLastAcceptedRule() {
-    lenient().when(rule1.accept(facts)).thenReturn(false);
-    lenient().when(rule2.accept(facts)).thenReturn(true);
+    when(rule1.accept(facts)).thenReturn(false);
+    when(rule2.accept(facts)).thenReturn(true);
 
     anyCompositeRule.accept(facts);
     anyCompositeRule.execute(facts);
@@ -101,8 +100,8 @@ class AnyCompositeRuleTest {
 
   @Test
   void shouldNotExecuteLastAcceptedRuleMultipleTimes() {
-    lenient().when(rule1.accept(facts)).thenReturn(false);
-    lenient().when(rule2.accept(facts)).thenReturn(true);
+    when(rule1.accept(facts)).thenReturn(false);
+    when(rule2.accept(facts)).thenReturn(true);
 
     anyCompositeRule.accept(facts);
     anyCompositeRule.execute(facts);
