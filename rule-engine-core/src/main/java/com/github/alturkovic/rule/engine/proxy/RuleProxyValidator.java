@@ -66,7 +66,7 @@ class RuleProxyValidator {
   private static void checkIfThenMethodsAreWellDefined(final Object rule) {
     final List<Method> thenMethods = getMethodsAnnotatedWith(Then.class, rule);
     if (thenMethods.isEmpty()) {
-      throw new IllegalArgumentException(format("Rule '%s' must have at least one public method annotated with '%s'", rule.getClass().getName(), Then.class.getName()));
+      throw new IllegalArgumentException(format("Rule '%s' must have at least one method annotated with '%s'", rule.getClass().getName(), Then.class.getName()));
     }
 
     for (final Method thenMethod : thenMethods) {
