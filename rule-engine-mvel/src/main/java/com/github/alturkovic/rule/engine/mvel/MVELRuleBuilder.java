@@ -22,59 +22,55 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.builder;
+package com.github.alturkovic.rule.engine.mvel;
 
-import com.github.alturkovic.rule.engine.api.Action;
-import com.github.alturkovic.rule.engine.api.Condition;
 import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.builder.AbstractRuleBuilder;
 import com.github.alturkovic.rule.engine.composite.CompositeAction;
 import com.github.alturkovic.rule.engine.core.DefaultRule;
 import java.util.ArrayList;
-import java.util.function.Predicate;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
 
-public class DefaultRuleBuilder extends AbstractRuleBuilder<DefaultRuleBuilder> {
-  private Condition condition = Condition.ALWAYS;
-  private Action action = Action.NO_OP;
+public class MVELRuleBuilder extends AbstractRuleBuilder<MVELRuleBuilder> {
+  private ParserContext context = new ParserContext();
+  private String condition;
+  private List<String> actions = new ArrayList<>();
 
-  public DefaultRuleBuilder(final String name) {
+  public MVELRuleBuilder(final String name) {
     super(name);
   }
 
-  public DefaultRuleBuilder when(final Condition condition) {
-    this.condition = condition;
+  public MVELRuleBuilder context(final ParserContext context) {
+    this.context = context;
     return this;
   }
 
-  public <T> DefaultRuleBuilder when(final String fact, final Predicate<T> predicate) {
-    this.condition = facts -> predicate.test(facts.get(fact));
+  public MVELRuleBuilder when(final String expression) {
+    this.condition = expression;
     return this;
   }
 
-  public DefaultRuleBuilder then(final Action action) {
-    if (this.action == Action.NO_OP) {
-      this.action = action;
-    } else {
-      this.action = new CompositeAction(accumulateActions(action));
-    }
+  public MVELRuleBuilder then(final String expression) {
+    this.actions.add(expression);
     return this;
   }
 
   public Rule build() {
-    return new DefaultRule(name, description, priority, condition, action);
+    final var mvelCondition = new MVELCondition(MVEL.compileExpression(condition, context));
+    final var mvelActions = new CompositeAction(parseActions());
+    return new DefaultRule(name, description, priority, mvelCondition, mvelActions);
   }
 
-  private ArrayList<Action> accumulateActions(final Action current) {
-    final var actions = new ArrayList<Action>();
-    if (this.action instanceof CompositeAction) {
-      actions.addAll(((CompositeAction) this.action).getActions());
-    } else {
-      actions.add(this.action);
-    }
-    actions.add(current);
-    return actions;
+  private List<MVELAction> parseActions() {
+    return actions.stream()
+        .map(action -> new MVELAction(MVEL.compileExpression(action, context)))
+        .collect(Collectors.toList());
   }
 
-  public static DefaultRuleBuilder newRule(final String name) {
-    return new DefaultRuleBuilder(name);
+  public static MVELRuleBuilder newMVELRule(final String name) {
+    return new MVELRuleBuilder(name);
   }
 }

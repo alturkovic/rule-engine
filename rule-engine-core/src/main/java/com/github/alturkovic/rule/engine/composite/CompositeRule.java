@@ -33,5 +33,5 @@ public abstract class CompositeRule implements Rule {
   private final String name;
   private final String description;
   private final int priority;
-  protected final Rules rules;
+  private final Rules rules;
 }

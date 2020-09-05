@@ -22,67 +22,49 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.core;
+package com.github.alturkovic.rule.engine.spel;
 
-import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.api.Facts;
+import com.github.alturkovic.rule.engine.core.SimpleFacts;
+import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.expression.spel.SpelEvaluationException;
 
+import static com.github.alturkovic.rule.engine.spel.util.SpELUtils.parse;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-class SimpleOrderedRulesTest {
+class SpELConditionTest {
 
   @Mock
-  private Rule rule1, rule2, rule3;
+  private Facts facts;
 
   @Test
-  void shouldOrderByPriority() {
-    doNotMockCompareMethods();
+  void shouldAcceptSimpleCondition() {
+    final var adultCondition = new SpELCondition(parse("#{['age'] > 18}"));
 
-    when(rule1.getPriority()).thenReturn(1);
-    when(rule2.getPriority()).thenReturn(2);
-    when(rule3.getPriority()).thenReturn(3);
+    final var facts = SimpleFacts.builder()
+        .fact("age", 20)
+        .build();
 
-    assertRuleOrder();
-  }
-
-  @Test
-  void shouldOrderByPriorityUsingExtremes() {
-    doNotMockCompareMethods();
-
-    when(rule1.getPriority()).thenReturn(Integer.MIN_VALUE);
-    when(rule3.getPriority()).thenReturn(Integer.MAX_VALUE);
-
-    assertRuleOrder();
+    assertThat(adultCondition.accept(facts)).isTrue();
   }
 
   @Test
-  void shouldOrderByNameWhenPriorityIsSame() {
-    doNotMockCompareMethods();
-
-    when(rule1.getPriority()).thenReturn(1);
-    when(rule2.getPriority()).thenReturn(2);
-    when(rule3.getPriority()).thenReturn(2);
-
-    when(rule2.getName()).thenReturn("Test rule 2");
-    when(rule3.getName()).thenReturn("Test rule 3");
-
-    assertRuleOrder();
+  void shouldNotAcceptWhenFactIsUndeclared() {
+    final var adultCondition = new SpELCondition(parse("#{['age'] > 18}"));
+    assertThat(adultCondition.accept(new SimpleFacts(Collections.emptyMap()))).isFalse();
   }
 
-  void doNotMockCompareMethods() {
-    when(rule1.compareTo(any())).thenCallRealMethod();
-    when(rule2.compareTo(any())).thenCallRealMethod();
-    when(rule3.compareTo(any())).thenCallRealMethod();
-  }
+  @Test
+  void shouldFailWithInvalidSpEL() {
+    final var condition = new SpELCondition(parse("#{T(com.github.alturkovic.rule.engine.spel.SpELActionTest).isAccepted()}"));
 
-  void assertRuleOrder() {
-    final var rules = new SimpleOrderedRules(rule3, rule1, rule2);
-    assertThat(rules).containsExactly(rule1, rule2, rule3);
+    assertThatThrownBy(() -> condition.accept(facts))
+        .isInstanceOf(SpelEvaluationException.class);
   }
 }

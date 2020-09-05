@@ -47,6 +47,8 @@
 
   <modules>
     <module>rule-engine-core</module>
+    <module>rule-engine-mvel</module>
+    <module>rule-engine-spel</module>
     <module>rule-engine-example</module>
   </modules>
 

@@ -22,67 +22,49 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.core;
+package com.github.alturkovic.rule.engine.mvel;
 
-import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.api.Facts;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.PropertyAccessException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SimpleOrderedRulesTest {
+class MVELConditionTest {
 
   @Mock
-  private Rule rule1, rule2, rule3;
+  private Facts facts;
 
   @Test
-  void shouldOrderByPriority() {
-    doNotMockCompareMethods();
-
-    when(rule1.getPriority()).thenReturn(1);
-    when(rule2.getPriority()).thenReturn(2);
-    when(rule3.getPriority()).thenReturn(3);
-
-    assertRuleOrder();
+  void shouldAcceptSimpleCondition() {
+    final var adultCondition = new MVELCondition(MVEL.compileExpression("age > 18"));
+    when(facts.asMap()).thenReturn(Map.of("age", 20));
+    assertThat(adultCondition.accept(facts)).isTrue();
   }
 
   @Test
-  void shouldOrderByPriorityUsingExtremes() {
-    doNotMockCompareMethods();
+  void shouldAcceptWithCustomContext() {
+    final ParserContext context = new ParserContext();
+    context.addPackageImport("java.util");
 
-    when(rule1.getPriority()).thenReturn(Integer.MIN_VALUE);
-    when(rule3.getPriority()).thenReturn(Integer.MAX_VALUE);
-
-    assertRuleOrder();
+    final var randomCondition = new MVELCondition(MVEL.compileExpression("return new java.util.Random(1).nextBoolean();", context));
+    assertThat(randomCondition.accept(facts)).isTrue();
   }
 
   @Test
-  void shouldOrderByNameWhenPriorityIsSame() {
-    doNotMockCompareMethods();
+  void shouldFailWithInvalidMVEL() {
+    final var adultCondition = new MVELCondition(MVEL.compileExpression("age > 18"));
 
-    when(rule1.getPriority()).thenReturn(1);
-    when(rule2.getPriority()).thenReturn(2);
-    when(rule3.getPriority()).thenReturn(2);
-
-    when(rule2.getName()).thenReturn("Test rule 2");
-    when(rule3.getName()).thenReturn("Test rule 3");
-
-    assertRuleOrder();
-  }
-
-  void doNotMockCompareMethods() {
-    when(rule1.compareTo(any())).thenCallRealMethod();
-    when(rule2.compareTo(any())).thenCallRealMethod();
-    when(rule3.compareTo(any())).thenCallRealMethod();
-  }
-
-  void assertRuleOrder() {
-    final var rules = new SimpleOrderedRules(rule3, rule1, rule2);
-    assertThat(rules).containsExactly(rule1, rule2, rule3);
+    assertThatThrownBy(() -> adultCondition.accept(facts))
+        .isInstanceOf(PropertyAccessException.class);
   }
 }

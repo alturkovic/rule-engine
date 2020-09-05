@@ -22,41 +22,20 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.composite;
+package com.github.alturkovic.rule.engine.mvel;
 
+import com.github.alturkovic.rule.engine.api.Condition;
 import com.github.alturkovic.rule.engine.api.Facts;
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import org.mvel2.MVEL;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class AnyCompositeRule extends CompositeRule {
-  private Rule lastAcceptedRule;
-
-  @Builder
-  public AnyCompositeRule(final String name, final String description, final int priority, final Rules rules) {
-    super(name, description, priority, rules);
-  }
+@AllArgsConstructor
+public class MVELCondition implements Condition {
+  private final Serializable expression;
 
   @Override
   public boolean accept(final Facts facts) {
-    for (final Rule rule : getRules()) {
-      if (rule.accept(facts)) {
-        lastAcceptedRule = rule;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
-  public void execute(final Facts facts) {
-    if (lastAcceptedRule != null) {
-      lastAcceptedRule.execute(facts);
-      lastAcceptedRule = null;
-    }
+    return (boolean) MVEL.executeExpression(expression, facts.asMap());
   }
 }

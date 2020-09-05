@@ -64,13 +64,6 @@ class RuleProxyDefinition {
     return description;
   }
 
-  private Rule getAnnotation() {
-    if (annotation == null) {
-      annotation = targetClass.getAnnotation(com.github.alturkovic.rule.engine.aop.Rule.class);
-    }
-    return annotation;
-  }
-
   public Method getWhenMethod() {
     if (whenMethod == null) {
       whenMethod = getMethods().stream()
@@ -107,6 +100,13 @@ class RuleProxyDefinition {
 
   public int getPriority() {
     return getAnnotation().priority();
+  }
+
+  private Rule getAnnotation() {
+    if (annotation == null) {
+      annotation = targetClass.getAnnotation(com.github.alturkovic.rule.engine.aop.Rule.class);
+    }
+    return annotation;
   }
 
   private List<Method> getMethods() {

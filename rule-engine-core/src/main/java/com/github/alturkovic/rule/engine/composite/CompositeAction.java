@@ -37,7 +37,7 @@ import lombok.Singular;
 @AllArgsConstructor
 public class CompositeAction implements Action {
   @Singular
-  private final List<Action> actions;
+  private final List<? extends Action> actions;
 
   @Override
   public void execute(final Facts facts) {

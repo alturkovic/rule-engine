@@ -10,7 +10,11 @@
     <version>1.0.0</version>
   </parent>
 
-  <artifactId>rule-engine-example</artifactId>
+  <artifactId>rule-engine-spel</artifactId>
+
+  <properties>
+    <spring.version>5.2.8.RELEASE</spring.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -19,18 +23,29 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.github.alturkovic</groupId>
       <artifactId>rule-engine-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.github.alturkovic</groupId>
-      <artifactId>rule-engine-mvel</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

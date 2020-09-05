@@ -22,41 +22,24 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.composite;
+package com.github.alturkovic.rule.engine.builder;
 
-import com.github.alturkovic.rule.engine.api.Facts;
 import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.RequiredArgsConstructor;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class AnyCompositeRule extends CompositeRule {
-  private Rule lastAcceptedRule;
+@RequiredArgsConstructor
+public abstract class AbstractRuleBuilder<B> {
+  protected final String name;
+  protected String description;
+  protected int priority = Rule.DEFAULT_PRIORITY;
 
-  @Builder
-  public AnyCompositeRule(final String name, final String description, final int priority, final Rules rules) {
-    super(name, description, priority, rules);
+  public B description(final String description) {
+    this.description = description;
+    return (B) this;
   }
 
-  @Override
-  public boolean accept(final Facts facts) {
-    for (final Rule rule : getRules()) {
-      if (rule.accept(facts)) {
-        lastAcceptedRule = rule;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
-  public void execute(final Facts facts) {
-    if (lastAcceptedRule != null) {
-      lastAcceptedRule.execute(facts);
-      lastAcceptedRule = null;
-    }
+  public B priority(final int priority) {
+    this.priority = priority;
+    return (B) this;
   }
 }

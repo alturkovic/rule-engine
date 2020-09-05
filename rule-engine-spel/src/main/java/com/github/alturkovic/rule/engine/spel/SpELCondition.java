@@ -22,41 +22,28 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.composite;
+package com.github.alturkovic.rule.engine.spel;
 
+import com.github.alturkovic.rule.engine.api.Condition;
 import com.github.alturkovic.rule.engine.api.Facts;
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import org.springframework.expression.BeanResolver;
+import org.springframework.expression.Expression;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class AnyCompositeRule extends CompositeRule {
-  private Rule lastAcceptedRule;
+import static com.github.alturkovic.rule.engine.spel.util.SpELUtils.asContext;
 
-  @Builder
-  public AnyCompositeRule(final String name, final String description, final int priority, final Rules rules) {
-    super(name, description, priority, rules);
+@AllArgsConstructor
+public class SpELCondition implements Condition {
+  private final Expression expression;
+  private final BeanResolver beanResolver;
+
+  public SpELCondition(final Expression expression) {
+    this(expression, null);
   }
 
   @Override
   public boolean accept(final Facts facts) {
-    for (final Rule rule : getRules()) {
-      if (rule.accept(facts)) {
-        lastAcceptedRule = rule;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
-  public void execute(final Facts facts) {
-    if (lastAcceptedRule != null) {
-      lastAcceptedRule.execute(facts);
-      lastAcceptedRule = null;
-    }
+    final var context = asContext(facts, beanResolver);
+    return expression.getValue(context, boolean.class);
   }
 }

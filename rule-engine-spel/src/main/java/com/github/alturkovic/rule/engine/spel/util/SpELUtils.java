@@ -22,41 +22,34 @@
  * SOFTWARE.
  */
 
-package com.github.alturkovic.rule.engine.composite;
+package com.github.alturkovic.rule.engine.spel.util;
 
 import com.github.alturkovic.rule.engine.api.Facts;
-import com.github.alturkovic.rule.engine.api.Rule;
-import com.github.alturkovic.rule.engine.api.Rules;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.expression.BeanResolver;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class AnyCompositeRule extends CompositeRule {
-  private Rule lastAcceptedRule;
-
-  @Builder
-  public AnyCompositeRule(final String name, final String description, final int priority, final Rules rules) {
-    super(name, description, priority, rules);
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class SpELUtils {
+  public static EvaluationContext asContext(final Facts facts, final BeanResolver beanResolver) {
+    final StandardEvaluationContext context = new StandardEvaluationContext();
+    final var factsMap = facts.asMap();
+    context.setRootObject(factsMap);
+    context.setVariables(factsMap);
+    context.setBeanResolver(beanResolver);
+    return context;
   }
 
-  @Override
-  public boolean accept(final Facts facts) {
-    for (final Rule rule : getRules()) {
-      if (rule.accept(facts)) {
-        lastAcceptedRule = rule;
-        return true;
-      }
-    }
-    return false;
+  public static Expression parse(final String expression) {
+    return parse(expression, ParserContext.TEMPLATE_EXPRESSION);
   }
 
-  @Override
-  public void execute(final Facts facts) {
-    if (lastAcceptedRule != null) {
-      lastAcceptedRule.execute(facts);
-      lastAcceptedRule = null;
-    }
+  public static Expression parse(final String expression, final ParserContext context) {
+    return new SpelExpressionParser().parseExpression(expression, context);
   }
 }

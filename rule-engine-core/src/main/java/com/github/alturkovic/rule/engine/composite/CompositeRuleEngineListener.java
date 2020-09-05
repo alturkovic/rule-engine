@@ -41,7 +41,7 @@ import lombok.ToString;
 public class CompositeRuleEngineListener implements RuleEngineListener {
 
   @Singular
-  private final List<RuleEngineListener> listeners;
+  private final List<? extends RuleEngineListener> listeners;
 
   @Override
   public boolean shouldStopBeforeEvaluation(final Rule rule, final Facts facts) {

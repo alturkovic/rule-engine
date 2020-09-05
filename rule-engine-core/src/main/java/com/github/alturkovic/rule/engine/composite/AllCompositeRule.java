@@ -42,7 +42,7 @@ public class AllCompositeRule extends CompositeRule {
 
   @Override
   public boolean accept(final Facts facts) {
-    for (final Rule rule : rules) {
+    for (final Rule rule : getRules()) {
       if (!rule.accept(facts)) {
         return false;
       }
@@ -52,6 +52,6 @@ public class AllCompositeRule extends CompositeRule {
 
   @Override
   public void execute(final Facts facts) {
-    rules.forEach(rule -> rule.execute(facts));
+    getRules().forEach(rule -> rule.execute(facts));
   }
 }
