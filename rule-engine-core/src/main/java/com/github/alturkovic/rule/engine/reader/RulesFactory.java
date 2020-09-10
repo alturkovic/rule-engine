@@ -50,7 +50,6 @@ public abstract class RulesFactory {
   }
 
   protected Rule toCompositeRule(final RuleDefinition ruleDefinition) {
-    // TODO fail if condition or actions are defined
     switch (ruleDefinition.getType()) {
       case "any":
         return asAnyCompositeRule(ruleDefinition);
@@ -61,7 +60,6 @@ public abstract class RulesFactory {
     }
   }
 
-  // TODO precheck that rules and type is not defined, fail otherwise
   protected abstract Rule toSimpleRule(final RuleDefinition ruleDefinition);
 
   protected Rules asRules(final List<RuleDefinition> definitions) {
