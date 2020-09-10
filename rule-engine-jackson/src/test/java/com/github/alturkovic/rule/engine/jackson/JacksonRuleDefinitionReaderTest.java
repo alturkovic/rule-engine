@@ -28,24 +28,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.github.alturkovic.rule.engine.reader.RuleDefinition;
 import com.github.alturkovic.rule.engine.reader.RuleDefinitionReader;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JacksonRuleDefinitionReaderTest {
 
-  private void assertFileDefinitionsAreValid(final RuleDefinitionReader reader, final String file) {
+  @Test
+  void shouldReadJson() {
+    assertFileDefinitionsAreValid(new JacksonRuleDefinitionReader(), "/rules.json");
+  }
+
+  @Test
+  void shouldReadYml() {
+    assertFileDefinitionsAreValid(new JacksonRuleDefinitionReader(new ObjectMapper(new YAMLFactory())), "/rules.yml");
+  }
+
+  void assertFileDefinitionsAreValid(final RuleDefinitionReader reader, final String file) {
     final var definitions = reader.definitions(JacksonRuleDefinitionReaderTest.class.getResourceAsStream(file));
-    assertDefinitionsAreValid(definitions);
+    assertThat(definitions).hasSize(1);
+    assertAnyRuleDefinitionIsValid(definitions.iterator().next());
   }
 
-  private void assertDefinitionsAreValid(final List<RuleDefinition> ruleDefinitions) {
-    assertThat(ruleDefinitions).hasSize(1);
-    assertAnyRuleDefinitionIsValid(ruleDefinitions.iterator().next());
-  }
-
-  private void assertAnyRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
+  void assertAnyRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
     assertThat(ruleDefinition.getName()).isEqualTo("Any rule");
     assertThat(ruleDefinition.getDescription()).isEqualTo("if any matches then execute it");
     assertThat(ruleDefinition.getPriority()).isEqualTo(2);
@@ -57,7 +62,7 @@ class JacksonRuleDefinitionReaderTest {
     assertSecondRuleDefinitionIsValid(ruleDefinition.getRules().get(1));
   }
 
-  private void assertFirstRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
+  void assertFirstRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
     assertThat(ruleDefinition.getName()).isEqualTo("First rule");
     assertThat(ruleDefinition.getDescription()).isEqualTo("First rule description");
     assertThat(ruleDefinition.getPriority()).isEqualTo(1);
@@ -68,7 +73,7 @@ class JacksonRuleDefinitionReaderTest {
     assertThat(ruleDefinition.isComposite()).isFalse();
   }
 
-  private void assertSecondRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
+  void assertSecondRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
     assertThat(ruleDefinition.getName()).isEqualTo("Second rule");
     assertThat(ruleDefinition.getDescription()).isEqualTo("Second rule description");
     assertThat(ruleDefinition.getPriority()).isEqualTo(2);
@@ -77,15 +82,5 @@ class JacksonRuleDefinitionReaderTest {
     assertThat(ruleDefinition.getType()).isNullOrEmpty();
     assertThat(ruleDefinition.getRules()).isEmpty();
     assertThat(ruleDefinition.isComposite()).isFalse();
-  }
-
-  @Test
-  void shouldReadJson() {
-    assertFileDefinitionsAreValid(new JacksonRuleDefinitionReader(), "/rules.json");
-  }
-
-  @Test
-  void shouldReadYml() {
-    assertFileDefinitionsAreValid(new JacksonRuleDefinitionReader(new ObjectMapper(new YAMLFactory())), "/rules.yml");
   }
 }

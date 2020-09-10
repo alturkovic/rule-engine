@@ -52,6 +52,49 @@ class SpELRulesFactoryTest {
     weather = null;
   }
 
+  @Test
+  public void shouldCreateSingleRule() {
+    final var rules = loadRulesFromFile("/weather-rule.json");
+    assertThat(rules).hasSize(1);
+
+    assertWeatherRuleIsValid(rules.iterator().next());
+  }
+
+  @Test
+  public void shouldCreateRules() {
+    final var rules = loadRulesFromFile("/rules.json");
+    assertThat(rules).hasSize(2);
+
+    // must be ordered by default
+    final var ruleIterator = rules.iterator();
+    assertAdultRuleIsValid(ruleIterator.next());
+    assertWeatherRuleIsValid(ruleIterator.next());
+  }
+
+  @Test
+  public void shouldCreateAnyCompositeRule() {
+    final var rules = loadRulesFromFile("/any-rule.json");
+    assertThat(rules).hasSize(1);
+
+    final var anyCompositeRule = rules.iterator().next();
+    assertCompositeRule(anyCompositeRule, AnyCompositeRule.class);
+    assertThat(anyCompositeRule.getName()).isEqualTo("Any rule");
+    assertThat(anyCompositeRule.getDescription()).isEqualTo("if any matches then execute it");
+    assertThat(anyCompositeRule.getPriority()).isEqualTo(2);
+  }
+
+  @Test
+  public void shouldCreateAllCompositeRule() {
+    final var rules = loadRulesFromFile("/all-rule.json");
+    assertThat(rules).hasSize(1);
+
+    final var allCompositeRule = rules.iterator().next();
+    assertCompositeRule(allCompositeRule, AllCompositeRule.class);
+    assertThat(allCompositeRule.getName()).isEqualTo("All rule");
+    assertThat(allCompositeRule.getDescription()).isEqualTo("if all match then execute");
+    assertThat(allCompositeRule.getPriority()).isEqualTo(2);
+  }
+
   private Rules loadRulesFromFile(final String file) {
     return factory.create(SpELRulesFactoryTest.class.getResourceAsStream(file));
   }
@@ -105,48 +148,5 @@ class SpELRulesFactoryTest {
       this.name = name;
       this.age = age;
     }
-  }
-
-  @Test
-  void shouldCreateSingleRule() {
-    final var rules = loadRulesFromFile("/weather-rule.json");
-    assertThat(rules).hasSize(1);
-
-    assertWeatherRuleIsValid(rules.iterator().next());
-  }
-
-  @Test
-  void shouldCreateRules() {
-    final var rules = loadRulesFromFile("/rules.json");
-    assertThat(rules).hasSize(2);
-
-    // must be ordered by default
-    final var ruleIterator = rules.iterator();
-    assertAdultRuleIsValid(ruleIterator.next());
-    assertWeatherRuleIsValid(ruleIterator.next());
-  }
-
-  @Test
-  void shouldCreateAnyCompositeRule() {
-    final var rules = loadRulesFromFile("/any-rule.json");
-    assertThat(rules).hasSize(1);
-
-    final var anyCompositeRule = rules.iterator().next();
-    assertCompositeRule(anyCompositeRule, AnyCompositeRule.class);
-    assertThat(anyCompositeRule.getName()).isEqualTo("Any rule");
-    assertThat(anyCompositeRule.getDescription()).isEqualTo("if any matches then execute it");
-    assertThat(anyCompositeRule.getPriority()).isEqualTo(2);
-  }
-
-  @Test
-  void shouldCreateAllCompositeRule() {
-    final var rules = loadRulesFromFile("/all-rule.json");
-    assertThat(rules).hasSize(1);
-
-    final var allCompositeRule = rules.iterator().next();
-    assertCompositeRule(allCompositeRule, AllCompositeRule.class);
-    assertThat(allCompositeRule.getName()).isEqualTo("All rule");
-    assertThat(allCompositeRule.getDescription()).isEqualTo("if all match then execute");
-    assertThat(allCompositeRule.getPriority()).isEqualTo(2);
   }
 }
