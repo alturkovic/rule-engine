@@ -1,0 +1,11 @@
+[
+  {
+    "name": "Weather rule",
+    "description": "if it rains then take an umbrella",
+    "priority": 3,
+    "when": "rain == true",
+    "then": [
+      "System.setProperty(\"WeatherRuleResult\", \"Rains!\")"
+    ]
+  }
+]

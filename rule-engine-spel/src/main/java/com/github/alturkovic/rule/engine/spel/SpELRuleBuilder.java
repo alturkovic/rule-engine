@@ -66,6 +66,11 @@ public class SpELRuleBuilder extends AbstractRuleBuilder<SpELRuleBuilder> {
     return this;
   }
 
+  public SpELRuleBuilder then(final List<String> expressions) {
+    this.actions.addAll(expressions);
+    return this;
+  }
+
   public Rule build() {
     final var spELCondition = new SpELCondition(parse(condition, context), beanResolver);
     final var spELActions = new CompositeAction(parseActions());

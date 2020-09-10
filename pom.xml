@@ -47,6 +47,7 @@
 
   <modules>
     <module>rule-engine-core</module>
+    <module>rule-engine-jackson</module>
     <module>rule-engine-mvel</module>
     <module>rule-engine-spel</module>
     <module>rule-engine-example</module>
@@ -64,9 +65,25 @@
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
+
       <dependency>
         <groupId>com.github.alturkovic</groupId>
         <artifactId>rule-engine-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.alturkovic</groupId>
+        <artifactId>rule-engine-jackson</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.alturkovic</groupId>
+        <artifactId>rule-engine-mvel</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.alturkovic</groupId>
+        <artifactId>rule-engine-spel</artifactId>
         <version>${project.version}</version>
       </dependency>
 

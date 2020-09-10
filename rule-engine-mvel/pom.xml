@@ -47,5 +47,10 @@
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.github.alturkovic</groupId>
+      <artifactId>rule-engine-jackson</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

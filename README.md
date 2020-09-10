@@ -49,25 +49,31 @@ Rule weatherRule = newRule("weather rule")
 
 #### Expression language
 
-##### MVEL
 ```java
 Rule weatherRule = newMVELRule("weather rule")
+        .description("if it rains then take an umbrella")
         .when("rain == true")
         .then("System.out.println(\"It rains, take an umbrella!\");")
         .build();
 ```
 
-##### SpEL
-```java
-Rule weatherRule = newSpELRule("weather rule")
-        .when("#{['rain'] == true}")
-        .then("#{T(java.lang.System).out.println('It rains, take an umbrella!')}")
-        .build();
-```
-
 #### Files
 
-// TODO
+`weather-rule.yaml` file:
+
+```yaml
+---
+- name: Weather rule
+  description: if it rains then take an umbrella
+  when: "#{['rain'] == true}"
+  then:
+    - "#{T(java.lang.System).out.println('It rains, take an umbrella!')}"
+```
+
+```java
+RulesFactory factory = new SpELRulesFactory(new JacksonRuleDefinitionReader(new ObjectMapper(new YAMLFactory())));
+Rules rules = factory.create(new FileInputStream("/spel-example.yml"));
+```
 
 ### 2. Evaluate rules
 

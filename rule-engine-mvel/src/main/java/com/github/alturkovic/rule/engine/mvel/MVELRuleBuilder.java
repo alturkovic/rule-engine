@@ -58,6 +58,11 @@ public class MVELRuleBuilder extends AbstractRuleBuilder<MVELRuleBuilder> {
     return this;
   }
 
+  public MVELRuleBuilder then(final List<String> expressions) {
+    this.actions.addAll(expressions);
+    return this;
+  }
+
   public Rule build() {
     final var mvelCondition = new MVELCondition(MVEL.compileExpression(condition, context));
     final var mvelActions = new CompositeAction(parseActions());
