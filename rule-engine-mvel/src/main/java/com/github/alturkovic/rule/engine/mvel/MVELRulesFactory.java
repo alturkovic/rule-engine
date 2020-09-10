@@ -36,8 +36,12 @@ public class MVELRulesFactory extends RulesFactory {
   private ParserContext context;
 
   public MVELRulesFactory(final RuleDefinitionReader definitionReader) {
+    this(definitionReader, new ParserContext());
+  }
+
+  public MVELRulesFactory(final RuleDefinitionReader definitionReader, final ParserContext context) {
     super(definitionReader);
-    this.context = new ParserContext();
+    this.context = context;
   }
 
   @Override
