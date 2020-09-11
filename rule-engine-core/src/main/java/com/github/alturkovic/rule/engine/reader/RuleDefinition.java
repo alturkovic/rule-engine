@@ -35,7 +35,7 @@ public class RuleDefinition {
   private String description;
   private int priority = Rule.DEFAULT_PRIORITY;
   private String when;
-  private List<String> then;
+  private List<String> then = new ArrayList<>();
 
   private String type;
   private List<RuleDefinition> rules = new ArrayList<>();

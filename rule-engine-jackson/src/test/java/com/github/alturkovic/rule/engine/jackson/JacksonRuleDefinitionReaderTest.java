@@ -35,22 +35,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JacksonRuleDefinitionReaderTest {
 
   @Test
-  void shouldReadJson() {
+  public void shouldReadJson() {
     assertFileDefinitionsAreValid(new JacksonRuleDefinitionReader(), "/rules.json");
   }
 
   @Test
-  void shouldReadYml() {
+  public void shouldReadYml() {
     assertFileDefinitionsAreValid(new JacksonRuleDefinitionReader(new ObjectMapper(new YAMLFactory())), "/rules.yml");
   }
 
-  void assertFileDefinitionsAreValid(final RuleDefinitionReader reader, final String file) {
+  public void assertFileDefinitionsAreValid(final RuleDefinitionReader reader, final String file) {
     final var definitions = reader.definitions(JacksonRuleDefinitionReaderTest.class.getResourceAsStream(file));
     assertThat(definitions).hasSize(1);
     assertAnyRuleDefinitionIsValid(definitions.iterator().next());
   }
 
-  void assertAnyRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
+  private void assertAnyRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
     assertThat(ruleDefinition.getName()).isEqualTo("Any rule");
     assertThat(ruleDefinition.getDescription()).isEqualTo("if any matches then execute it");
     assertThat(ruleDefinition.getPriority()).isEqualTo(2);
@@ -62,7 +62,7 @@ class JacksonRuleDefinitionReaderTest {
     assertSecondRuleDefinitionIsValid(ruleDefinition.getRules().get(1));
   }
 
-  void assertFirstRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
+  private void assertFirstRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
     assertThat(ruleDefinition.getName()).isEqualTo("First rule");
     assertThat(ruleDefinition.getDescription()).isEqualTo("First rule description");
     assertThat(ruleDefinition.getPriority()).isEqualTo(1);
@@ -73,7 +73,7 @@ class JacksonRuleDefinitionReaderTest {
     assertThat(ruleDefinition.isComposite()).isFalse();
   }
 
-  void assertSecondRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
+  private void assertSecondRuleDefinitionIsValid(final RuleDefinition ruleDefinition) {
     assertThat(ruleDefinition.getName()).isEqualTo("Second rule");
     assertThat(ruleDefinition.getDescription()).isEqualTo("Second rule description");
     assertThat(ruleDefinition.getPriority()).isEqualTo(2);

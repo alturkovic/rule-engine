@@ -40,6 +40,7 @@ public abstract class RulesFactory {
 
   public Rules create(final InputStream stream) {
     final var definitions = definitionReader.definitions(stream);
+    definitions.forEach(RuleDefinitionValidator::validate);
     return asRules(definitions);
   }
 
