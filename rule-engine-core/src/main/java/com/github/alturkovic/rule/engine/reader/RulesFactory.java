@@ -44,6 +44,14 @@ public abstract class RulesFactory {
     return asRules(definitions);
   }
 
+  protected Rules asRules(final List<RuleDefinition> definitions) {
+    final var rules = definitions.stream()
+        .map(this::toRule)
+        .collect(Collectors.toSet());
+
+    return new SimpleOrderedRules(rules);
+  }
+
   protected Rule toRule(final RuleDefinition ruleDefinition) {
     return ruleDefinition.isComposite()
         ? toCompositeRule(ruleDefinition)
@@ -63,16 +71,8 @@ public abstract class RulesFactory {
 
   protected abstract Rule toSimpleRule(final RuleDefinition ruleDefinition);
 
-  protected Rules asRules(final List<RuleDefinition> definitions) {
-    final var rules = definitions.stream()
-        .map(this::toRule)
-        .collect(Collectors.toSet());
-
-    return new SimpleOrderedRules(rules);
-  }
-
-  private AllCompositeRule asAllCompositeRule(final RuleDefinition ruleDefinition) {
-    return AllCompositeRule.builder()
+  private AnyCompositeRule asAnyCompositeRule(final RuleDefinition ruleDefinition) {
+    return AnyCompositeRule.builder()
         .name(ruleDefinition.getName())
         .description(ruleDefinition.getDescription())
         .priority(ruleDefinition.getPriority())
@@ -80,8 +80,8 @@ public abstract class RulesFactory {
         .build();
   }
 
-  private AnyCompositeRule asAnyCompositeRule(final RuleDefinition ruleDefinition) {
-    return AnyCompositeRule.builder()
+  private AllCompositeRule asAllCompositeRule(final RuleDefinition ruleDefinition) {
+    return AllCompositeRule.builder()
         .name(ruleDefinition.getName())
         .description(ruleDefinition.getDescription())
         .priority(ruleDefinition.getPriority())
