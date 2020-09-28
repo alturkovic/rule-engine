@@ -72,7 +72,7 @@ Rule weatherRule = newMVELRule("weather rule")
 
 ```java
 RulesFactory factory = new SpELRulesFactory(new JacksonRuleDefinitionReader(new ObjectMapper(new YAMLFactory())));
-Rules rules = factory.create(new FileInputStream("/spel-example.yml"));
+Rules rules = factory.create(new FileInputStream("/weather-rule.yaml"));
 ```
 
 ### 2. Evaluate rules
