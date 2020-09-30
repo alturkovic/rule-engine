@@ -35,13 +35,11 @@ import java.lang.reflect.Proxy;
  */
 public class RuleProxy implements InvocationHandler {
   private final Object target;
-  private final RuleProxyDefinition definition;
   private final RuleProxyMethodInvoker invoker;
 
   private RuleProxy(final Object target) {
     this.target = target;
-    this.definition = new RuleProxyDefinition(target.getClass());
-    this.invoker = new RuleProxyMethodInvoker(this.definition);
+    this.invoker = new RuleProxyMethodInvoker(target);
   }
 
   @Override
@@ -49,23 +47,23 @@ public class RuleProxy implements InvocationHandler {
     final var methodName = method.getName();
     switch (methodName) {
       case "getName":
-        return definition.getName();
+        return invoker.name();
       case "getDescription":
-        return definition.getDescription();
+        return invoker.description();
       case "getPriority":
-        return definition.getPriority();
+        return invoker.priority();
       case "accept":
-        return invoker.when(target, (Facts) args[0]);
+        return invoker.when((Facts) args[0]);
       case "execute":
-        return invoker.then(target, (Facts) args[0]);
+        return invoker.then((Facts) args[0]);
       case "compareTo":
-        return invoker.compareToProxy(target, args[0]);
+        return invoker.compareToProxy(args[0]);
       case "equals":
         return invoker.equalsProxy(args[0]);
       case "hashCode":
         return invoker.hashCodeProxy();
       case "toString":
-        return invoker.toStringProxy(target);
+        return invoker.toStringProxy();
       default:
         throw new IllegalStateException(String.format("Method '%s' execution not supported on rule '%s'", method, proxy));
     }

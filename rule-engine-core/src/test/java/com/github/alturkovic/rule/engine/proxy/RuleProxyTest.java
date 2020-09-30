@@ -24,7 +24,10 @@
 
 package com.github.alturkovic.rule.engine.proxy;
 
+import com.github.alturkovic.rule.engine.aop.Description;
 import com.github.alturkovic.rule.engine.aop.Given;
+import com.github.alturkovic.rule.engine.aop.Name;
+import com.github.alturkovic.rule.engine.aop.Priority;
 import com.github.alturkovic.rule.engine.aop.Rule;
 import com.github.alturkovic.rule.engine.aop.Then;
 import com.github.alturkovic.rule.engine.aop.When;
@@ -126,6 +129,87 @@ class RuleProxyTest {
   }
 
   @Test
+  void shouldNotCreateProxyWithNameMethodThatThatDoesNotReturnString() {
+
+    @Rule
+    class InvalidReturnNameProxy extends BaseProxy {
+      @Name
+      public int name() {
+        return 1;
+      }
+    }
+    assertThrows(IllegalArgumentException.class, () -> RuleProxy.asRule(new InvalidReturnNameProxy()));
+  }
+
+  @Test
+  void shouldNotCreateProxyWithNameMethodThatExpectsArguments() {
+
+    @Rule
+    class InvalidArgumentsNameProxy extends BaseProxy {
+      @Name
+      public String name(int x) {
+        return "";
+      }
+    }
+
+    assertThrows(IllegalArgumentException.class, () -> RuleProxy.asRule(new InvalidArgumentsNameProxy()));
+  }
+
+  @Test
+  void shouldNotCreateProxyWithDescriptionMethodThatThatDoesNotReturnString() {
+
+    @Rule
+    class InvalidReturnDescriptionProxy extends BaseProxy {
+      @Description
+      public int description() {
+        return 1;
+      }
+    }
+    assertThrows(IllegalArgumentException.class, () -> RuleProxy.asRule(new InvalidReturnDescriptionProxy()));
+  }
+
+  @Test
+  void shouldNotCreateProxyWithDescriptionMethodThatExpectsArguments() {
+
+    @Rule
+    class InvalidArgumentsDescriptionProxy extends BaseProxy {
+      @Description
+      public String description(int x) {
+        return "";
+      }
+    }
+
+    assertThrows(IllegalArgumentException.class, () -> RuleProxy.asRule(new InvalidArgumentsDescriptionProxy()));
+  }
+
+  @Test
+  void shouldNotCreateProxyWithPriorityMethodThatThatDoesNotReturnInteger() {
+
+    @Rule
+    class InvalidReturnPriorityProxy extends BaseProxy {
+      @Priority
+      public String priority() {
+        return "2";
+      }
+    }
+    assertThrows(IllegalArgumentException.class, () -> RuleProxy.asRule(new InvalidReturnPriorityProxy()));
+  }
+
+  @Test
+  void shouldNotCreateProxyWithPriorityMethodThatExpectsArguments() {
+
+    @Rule
+    class InvalidArgumentsPriorityProxy extends BaseProxy {
+      @Priority
+      public int priority(int x) {
+        return x;
+      }
+    }
+
+    assertThrows(IllegalArgumentException.class, () -> RuleProxy.asRule(new InvalidArgumentsPriorityProxy()));
+  }
+
+  @Test
   void shouldUseDefinedValues() {
     final var NAME = "My name";
     final var DESCRIPTION = "My description";
@@ -164,6 +248,36 @@ class RuleProxyTest {
     assertThat(rule.getName()).isEqualTo(UndefinedProxy.class.getSimpleName());
     assertThat(rule.getDescription()).isEqualTo("When shouldRun then runFirst, runSecond");
     assertThat(rule.getPriority()).isEqualTo(com.github.alturkovic.rule.engine.api.Rule.DEFAULT_PRIORITY);
+  }
+
+  @Test
+  void shouldPreferDefinedMethodsOverDefinedValues() {
+    final var NAME = "My name";
+    final var DESCRIPTION = "My description";
+    final var PRIORITY = 7;
+
+    @Rule(name = "Rule defined name", description = "Rule defined description", priority = 3)
+    class DefinedProxy extends BaseProxy {
+      @Name
+      public String name() {
+        return NAME;
+      }
+
+      @Description
+      public String description() {
+        return DESCRIPTION;
+      }
+
+      @Priority
+      public int priority() {
+        return PRIORITY;
+      }
+    }
+
+    final var rule = RuleProxy.asRule(new DefinedProxy());
+    assertThat(rule.getName()).isEqualTo(NAME);
+    assertThat(rule.getDescription()).isEqualTo(DESCRIPTION);
+    assertThat(rule.getPriority()).isEqualTo(PRIORITY);
   }
 
   @Test

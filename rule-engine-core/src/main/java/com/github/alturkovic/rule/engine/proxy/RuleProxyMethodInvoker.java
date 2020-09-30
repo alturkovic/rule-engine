@@ -31,23 +31,51 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 class RuleProxyMethodInvoker {
+  private final Object target;
   private final RuleProxyDefinition definition;
 
-  public Object when(final Object target, final Facts facts) {
-    final var when = definition.getWhenMethod();
+  public RuleProxyMethodInvoker(final Object target) {
+    this.target = target;
+    this.definition = new RuleProxyDefinition(target.getClass());
+  }
+
+  public String name() throws Exception {
+    final var nameMethod = definition.getNameMethod();
+    if (nameMethod != null) {
+      return (String) nameMethod.invoke(target);
+    }
+    return definition.getName();
+  }
+
+  public String description() throws Exception {
+    final var descriptionMethod = definition.getDescriptionMethod();
+    if (descriptionMethod != null) {
+      return (String) descriptionMethod.invoke(target);
+    }
+    return definition.getDescription();
+  }
+
+  public int priority() throws Exception {
+    final var priorityMethod = definition.getPriorityMethod();
+    if (priorityMethod != null) {
+      return (int) priorityMethod.invoke(target);
+    }
+    return definition.getPriority();
+  }
+
+  public boolean when(final Facts facts) {
+    final var whenMethod = definition.getWhenMethod();
     try {
-      final var requestedWhenParameters = extractGivenParameters(when, facts);
-      return when.invoke(target, requestedWhenParameters);
+      final var requestedWhenParameters = extractGivenParameters(whenMethod, facts);
+      return (boolean) whenMethod.invoke(target, requestedWhenParameters);
     } catch (final Exception e) {
       return false;
     }
   }
 
-  public Object then(final Object target, final Facts facts) throws Exception {
+  public Object then(final Facts facts) throws Exception {
     for (final var thenMethod : definition.getThenMethods()) {
       final var requestedFactParameters = extractGivenParameters(thenMethod, facts);
       thenMethod.invoke(target, requestedFactParameters);
@@ -55,39 +83,38 @@ class RuleProxyMethodInvoker {
     return null;
   }
 
-  public Object compareToProxy(final Object target, final Object other) throws Exception {
-    final var compareTo = definition.getCompareToMethod();
-    if (compareTo != null && Proxy.isProxyClass(other.getClass())) {
+  public Object compareToProxy(final Object other) throws Exception {
+    final var compareToMethod = definition.getCompareToMethod();
+    if (compareToMethod != null && Proxy.isProxyClass(other.getClass())) {
       final var otherTarget = ((RuleProxy) Proxy.getInvocationHandler(other)).getTarget();
-      return compareTo.invoke(target, otherTarget);
+      return compareToMethod.invoke(target, otherTarget);
     }
     return compareTo((Rule) other);
   }
 
-  public boolean equalsProxy(final Object other) {
+  public boolean equalsProxy(final Object other) throws Exception {
     if (!(other instanceof Rule)) {
       return false;
     }
 
     final var otherRule = (Rule) other;
-    final var priority = definition.getPriority();
+    final var priority = priority();
     final var otherPriority = otherRule.getPriority();
     if (priority != otherPriority) {
       return false;
     }
 
-    return Objects.equals(definition.getName(), otherRule.getName());
+    return Objects.equals(name(), otherRule.getName());
   }
 
-  public int hashCodeProxy() {
-    var result = definition.getName().hashCode();
-    result = 31 * result + definition.getPriority();
+  public int hashCodeProxy() throws Exception {
+    var result = name().hashCode();
+    result = 31 * result + priority();
     return result;
   }
 
-  public String toStringProxy(final Object target) throws Exception {
-    final var toString = definition.getToStringMethod();
-    return (String) toString.invoke(target);
+  public String toStringProxy() throws Exception {
+    return (String) definition.getToStringMethod().invoke(target);
   }
 
   private Object[] extractGivenParameters(final Method method, final Facts facts) {
@@ -108,13 +135,13 @@ class RuleProxyMethodInvoker {
     return actualParameters.toArray();
   }
 
-  private int compareTo(final Rule otherRule) {
-    final var priority = definition.getPriority();
+  private int compareTo(final Rule otherRule) throws Exception {
+    final var priority = priority();
     final var otherPriority = otherRule.getPriority();
     final var priorityComparison = Integer.compare(priority, otherPriority);
     if (priorityComparison != 0) {
       return priorityComparison;
     }
-    return definition.getName().compareTo(otherRule.getName());
+    return name().compareTo(otherRule.getName());
   }
 }

@@ -24,6 +24,9 @@
 
 package com.github.alturkovic.rule.engine.proxy;
 
+import com.github.alturkovic.rule.engine.aop.Description;
+import com.github.alturkovic.rule.engine.aop.Name;
+import com.github.alturkovic.rule.engine.aop.Priority;
 import com.github.alturkovic.rule.engine.aop.Rule;
 import com.github.alturkovic.rule.engine.aop.Then;
 import com.github.alturkovic.rule.engine.aop.When;
@@ -41,6 +44,9 @@ class RuleProxyDefinition {
   private String name;
   private String description;
   private List<Method> methods;
+  private Method nameMethod;
+  private Method descriptionMethod;
+  private Method priorityMethod;
   private Method whenMethod;
   private List<Method> thenMethods;
   private Method compareToMethod;
@@ -64,11 +70,45 @@ class RuleProxyDefinition {
     return description;
   }
 
+  public int getPriority() {
+    return getAnnotation().priority();
+  }
+
   private Rule getAnnotation() {
     if (annotation == null) {
       annotation = targetClass.getAnnotation(com.github.alturkovic.rule.engine.aop.Rule.class);
     }
     return annotation;
+  }
+
+  public Method getNameMethod() {
+    if (nameMethod == null) {
+      nameMethod = getMethods().stream()
+          .filter(m -> m.isAnnotationPresent(Name.class))
+          .findFirst()
+          .orElse(null);
+    }
+    return nameMethod;
+  }
+
+  public Method getDescriptionMethod() {
+    if (descriptionMethod == null) {
+      descriptionMethod = getMethods().stream()
+          .filter(m -> m.isAnnotationPresent(Description.class))
+          .findFirst()
+          .orElse(null);
+    }
+    return descriptionMethod;
+  }
+
+  public Method getPriorityMethod() {
+    if (priorityMethod == null) {
+      priorityMethod = getMethods().stream()
+          .filter(m -> m.isAnnotationPresent(Priority.class))
+          .findFirst()
+          .orElse(null);
+    }
+    return priorityMethod;
   }
 
   public Method getWhenMethod() {
@@ -103,10 +143,6 @@ class RuleProxyDefinition {
       toStringMethod = getNamedMethod("toString");
     }
     return toStringMethod;
-  }
-
-  public int getPriority() {
-    return getAnnotation().priority();
   }
 
   private List<Method> getMethods() {
