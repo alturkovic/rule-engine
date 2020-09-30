@@ -25,6 +25,7 @@
 package com.github.alturkovic.rule.engine.core;
 
 import com.github.alturkovic.rule.engine.api.Facts;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,11 +48,16 @@ public class SimpleFacts implements Facts {
   @Override
   public <T> T get(final String name) {
     //noinspection unchecked
-    return (T) factMap.getOrDefault(name, null);
+    return (T) factMap.get(name);
   }
 
   @Override
   public boolean isDeclared(final String name) {
     return factMap.containsKey(name);
+  }
+
+  @Override
+  public Map<String, Object> asMap() {
+    return new HashMap<>(factMap);
   }
 }

@@ -24,8 +24,16 @@
 
 package com.github.alturkovic.rule.engine.core;
 
-import com.github.alturkovic.rule.engine.BaseTest;
+import com.github.alturkovic.rule.engine.api.Facts;
+import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.api.RuleEngine;
+import com.github.alturkovic.rule.engine.api.RuleEngineListener;
+import java.util.TreeSet;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -36,7 +44,28 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class DefaultRuleEngineTest extends BaseTest {
+@ExtendWith(MockitoExtension.class)
+class DefaultRuleEngineTest {
+
+  @Mock
+  protected Rule rule1, rule2;
+
+  @Mock
+  protected Facts facts;
+
+  @Mock
+  protected RuleEngineListener listener;
+
+  protected RuleEngine engine;
+
+  @BeforeEach
+  public void setup() {
+    final var rules = new TreeSet<Rule>();
+    rules.add(rule1);
+    rules.add(rule2);
+
+    engine = new DefaultRuleEngine(listener, new SimpleOrderedRules(rules));
+  }
 
   @Test
   void shouldExecuteAcceptedRules() {

@@ -4,13 +4,13 @@ This rule engine is heavily inspired by [Easy Rules](https://github.com/j-easy/e
 
 Some design decisions have been changed, such as:
  * Rules are provided to engines when they are built, not at runtime, use different engines for different rule namespaces 
- * Engines do not ensure rule ordering, `Rules` abstraction does, so they do not have to be ordered
+ * Engines do not ensure rule ordering, `Rules` abstraction can, so they do not have to be ordered
  * Engines cannot be parametrized, `RuleEngineListener` can control when to stop further evaluation without adding such specifics to engines
  * The default `RuleEngine` uses a single listener, but the core library provides a `CompositeRuleEngineListener` to encapsulate multiple listeners
 
 ## Core features
 
- * Zero runtime dependencies
+ * Zero runtime dependencies for the core module
  * Easy to use and extend API
  * Different ways to define rules
  * Different rule engine implementations
@@ -40,7 +40,7 @@ public class WeatherRule {
 #### Programmatic
 
 ```java
-Rule weatherRule = new DefaultRuleBuilder("weather rule")
+Rule weatherRule = newRule("weather rule")
         .description("if it rains then take an umbrella")
         .<Boolean>when("rain", rain -> rain == true)
         .then(facts -> System.out.println("It rains, take an umbrella!"))
@@ -49,11 +49,31 @@ Rule weatherRule = new DefaultRuleBuilder("weather rule")
 
 #### Expression language
 
-// TODO
+```java
+Rule weatherRule = newMVELRule("weather rule")
+        .description("if it rains then take an umbrella")
+        .when("rain == true")
+        .then("System.out.println(\"It rains, take an umbrella!\");")
+        .build();
+```
 
 #### Files
 
-// TODO
+`weather-rule.yaml` file:
+
+```yaml
+---
+- name: Weather rule
+  description: if it rains then take an umbrella
+  when: "#{['rain'] == true}"
+  then:
+    - "#{T(java.lang.System).out.println('It rains, take an umbrella!')}"
+```
+
+```java
+RulesFactory factory = new SpELRulesFactory(new JacksonRuleDefinitionReader(new ObjectMapper(new YAMLFactory())));
+Rules rules = factory.create(new FileInputStream("/weather-rule.yaml"));
+```
 
 ### 2. Evaluate rules
 

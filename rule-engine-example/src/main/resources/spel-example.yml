@@ -1,0 +1,6 @@
+---
+- name: Weather rule
+  description: if it rains then take an umbrella
+  when: "#{['rain'] == true}"
+  then:
+    - "#{T(java.lang.System).out.println('It rains, take an umbrella!')}"

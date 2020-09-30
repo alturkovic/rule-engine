@@ -27,28 +27,17 @@ package com.github.alturkovic.rule.engine.builder;
 import com.github.alturkovic.rule.engine.api.Action;
 import com.github.alturkovic.rule.engine.api.Condition;
 import com.github.alturkovic.rule.engine.api.Rule;
+import com.github.alturkovic.rule.engine.composite.CompositeAction;
 import com.github.alturkovic.rule.engine.core.DefaultRule;
-import com.github.alturkovic.rule.engine.support.CompositeAction;
 import java.util.ArrayList;
 import java.util.function.Predicate;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class DefaultRuleBuilder {
-  private final String name;
-  private String description;
-  private int priority = Rule.DEFAULT_PRIORITY;
+public class DefaultRuleBuilder extends AbstractRuleBuilder<DefaultRuleBuilder> {
   private Condition condition = Condition.ALWAYS;
   private Action action = Action.NO_OP;
 
-  public DefaultRuleBuilder description(final String description) {
-    this.description = description;
-    return this;
-  }
-
-  public DefaultRuleBuilder priority(final int priority) {
-    this.priority = priority;
-    return this;
+  public DefaultRuleBuilder(final String name) {
+    super(name);
   }
 
   public DefaultRuleBuilder when(final Condition condition) {
@@ -70,6 +59,10 @@ public class DefaultRuleBuilder {
     return this;
   }
 
+  public Rule build() {
+    return new DefaultRule(name, description, priority, condition, action);
+  }
+
   private ArrayList<Action> accumulateActions(final Action current) {
     final var actions = new ArrayList<Action>();
     if (this.action instanceof CompositeAction) {
@@ -79,10 +72,6 @@ public class DefaultRuleBuilder {
     }
     actions.add(current);
     return actions;
-  }
-
-  public Rule build() {
-    return new DefaultRule(name, description, priority, condition, action);
   }
 
   public static DefaultRuleBuilder newRule(final String name) {

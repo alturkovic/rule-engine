@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Any rule",
+    "description": "if any matches then execute it",
+    "priority": 2,
+    "type": "any",
+    "rules": [
+      {
+        "name": "First rule",
+        "description": "First rule description",
+        "priority": 1,
+        "when": "first == true",
+        "then": [
+          "print",
+          "delete"
+        ]
+      },
+      {
+        "name": "Second rule",
+        "description": "Second rule description",
+        "priority": 2,
+        "when": "accepted()",
+        "then": [
+          "execute()"
+        ]
+      }
+    ]
+  }
+]

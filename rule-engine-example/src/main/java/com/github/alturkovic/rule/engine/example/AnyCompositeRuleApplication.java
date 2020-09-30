@@ -26,10 +26,11 @@ package com.github.alturkovic.rule.engine.example;
 
 import com.github.alturkovic.rule.engine.api.Rule;
 import com.github.alturkovic.rule.engine.builder.DefaultRuleEngineBuilder;
+import com.github.alturkovic.rule.engine.composite.AnyCompositeRule;
 import com.github.alturkovic.rule.engine.core.SimpleFacts;
 import com.github.alturkovic.rule.engine.core.SimpleOrderedRules;
-import com.github.alturkovic.rule.engine.support.AnyCompositeRule;
 import java.util.Collections;
+import java.util.Set;
 
 import static com.github.alturkovic.rule.engine.builder.DefaultRuleBuilder.newRule;
 
@@ -45,9 +46,7 @@ public class AnyCompositeRuleApplication {
         .then(f -> System.out.print("2"))
         .build();
 
-    final var rules = new SimpleOrderedRules();
-    rules.register(rule1);
-    rules.register(rule2);
+    final var rules = new SimpleOrderedRules(Set.of(rule1, rule2));
 
     final var engine = new DefaultRuleEngineBuilder()
         .rule(new AnyCompositeRule("AnyCompositeRule", null, Rule.DEFAULT_PRIORITY, rules))

@@ -75,18 +75,14 @@ class SimpleOrderedRulesTest {
     assertRuleOrder();
   }
 
-  private void doNotMockCompareMethods() {
+  void doNotMockCompareMethods() {
     when(rule1.compareTo(any())).thenCallRealMethod();
     when(rule2.compareTo(any())).thenCallRealMethod();
     when(rule3.compareTo(any())).thenCallRealMethod();
   }
 
-  private void assertRuleOrder() {
-    final var rules = new SimpleOrderedRules();
-    rules.register(rule3);
-    rules.register(rule1);
-    rules.register(rule2);
-
+  void assertRuleOrder() {
+    final var rules = new SimpleOrderedRules(rule3, rule1, rule2);
     assertThat(rules).containsExactly(rule1, rule2, rule3);
   }
 }
