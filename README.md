@@ -1,3 +1,5 @@
+![Java](https://img.shields.io/badge/Java-11%2B-ED8B00?style=for-the-badge&labelColor=ED8B00&logo=java&color=808080)
+
 # Rule engine
 
 This rule engine is heavily inspired by [Easy Rules](https://github.com/j-easy/easy-rules).
