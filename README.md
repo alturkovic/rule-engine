@@ -1,4 +1,4 @@
-![Java](https://img.shields.io/badge/Java-11%2B-ED8B00?style=for-the-badge&labelColor=ED8B00&logo=java&color=808080)
+![Java](https://img.shields.io/badge/Java-11%2B-ED8B00?style=for-the-badge&labelColor=ED8B00&logo=java&color=808080) ![JitPack](https://img.shields.io/jitpack/v/github/alturkovic/rule-engine?style=for-the-badge&logo=Git&labelColor=007ec5&color=808080&logoColor=white)
 
 # Rule engine
 
@@ -93,4 +93,28 @@ public class ExampleApplication {
        engine.evaluate(facts); 
     }
 }
+```
+
+## Importing into your project using Maven
+
+Add the JitPack repository to your `pom.xml`.
+
+```xml
+
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+Add the following under your `<dependencies>`:
+
+```xml
+<dependency>
+    <groupId>com.github.alturkovic</groupId>
+    <artifactId>rule-engine</artifactId>
+    <version>1.0.0</version>
+</dependency>
 ```
